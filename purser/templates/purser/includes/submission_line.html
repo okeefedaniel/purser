@@ -1,0 +1,12 @@
+{% load purser_tags %}
+<tr id="line-{{ value.pk }}">
+    <td class="text-muted small">{{ line_item.code }}</td>
+    <td>{{ line_item.label }}</td>
+    <td class="text-end">
+        {% if line_item.data_type == 'text' %}
+        {{ value.text_value|default:"—" }}
+        {% else %}
+        {{ value.numeric_value|currency }}
+        {% endif %}
+    </td>
+</tr>

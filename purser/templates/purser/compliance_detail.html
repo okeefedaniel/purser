@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load purser_tags %}
+
+{% block title %}{{ item.label }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'purser:compliance_dashboard' %}">Compliance</a></li>
+        <li class="breadcrumb-item active">{{ item.label }}</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{{ item.label }}</h2>
+    <span class="badge bg-{{ item.status|status_color }} fs-6">{{ item.get_status_display }}</span>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header"><strong>Details</strong></div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Requirement</dt>
+                    <dd class="col-sm-8">{{ item.obligation.template.name }}</dd>
+
+                    <dt class="col-sm-4">Type</dt>
+                    <dd class="col-sm-8">{{ item.obligation.template.get_requirement_type_display }}</dd>
+
+                    <dt class="col-sm-4">Due Date</dt>
+                    <dd class="col-sm-8">{{ item.due_date|date:"F j, Y" }}</dd>
+
+                    <dt class="col-sm-4">Contract</dt>
+                    <dd class="col-sm-8">{{ item.obligation.contract_number|default:"—" }}</dd>
+
+                    {% if item.submitted_by %}
+                    <dt class="col-sm-4">Submitted By</dt>
+                    <dd class="col-sm-8">{{ item.submitted_by.get_full_name }} on {{ item.submitted_at|date:"M j, Y g:i A" }}</dd>
+                    {% endif %}
+
+                    {% if item.reviewed_by %}
+                    <dt class="col-sm-4">Reviewed By</dt>
+                    <dd class="col-sm-8">{{ item.reviewed_by.get_full_name }} on {{ item.reviewed_at|date:"M j, Y g:i A" }}</dd>
+                    {% endif %}
+
+                    {% if item.reviewer_notes %}
+                    <dt class="col-sm-4">Reviewer Notes</dt>
+                    <dd class="col-sm-8">{{ item.reviewer_notes }}</dd>
+                    {% endif %}
+                </dl>
+            </div>
+        </div>
+
+        {% if item.document %}
+        <div class="card mb-3">
+            <div class="card-header"><strong>Document</strong></div>
+            <div class="card-body">
+                <a href="{{ item.document.url }}" class="btn btn-outline-primary">
+                    <i class="bi bi-file-earmark-arrow-down"></i> Download
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"><strong>Template Info</strong></div>
+            <div class="card-body small">
+                <p>{{ item.obligation.template.description|default:"No description" }}</p>
+                <p><strong>Cadence:</strong> {{ item.obligation.template.get_cadence_display }}</p>
+                <p><strong>Reminder lead:</strong> {{ item.obligation.template.reminder_lead_days }} days</p>
+                <p><strong>Escalation after:</strong> {{ item.obligation.template.escalation_after_days }} days</p>
+                {% if item.obligation.template.accepted_file_types %}
+                <p><strong>Accepted files:</strong> {{ item.obligation.template.accepted_file_types }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

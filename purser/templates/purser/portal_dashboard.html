@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load purser_tags %}
+
+{% block title %}My Compliance Obligations{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">My Compliance Obligations</h2>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Requirement</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>
+                        <strong>{{ item.label }}</strong>
+                        <br><small class="text-muted">{{ item.obligation.template.get_requirement_type_display }}</small>
+                    </td>
+                    <td>{{ item.due_date|date:"F j, Y" }}</td>
+                    <td>
+                        <span class="badge bg-{{ item.status|status_color }}">
+                            {{ item.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if item.status in 'pending,overdue' %}
+                        <a href="{% url 'purser:compliance_detail' item.pk %}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-upload"></i> Upload
+                        </a>
+                        {% elif item.status == 'rejected' %}
+                        <a href="{% url 'purser:compliance_detail' item.pk %}" class="btn btn-sm btn-warning">
+                            Resubmit
+                        </a>
+                        {% else %}
+                        <a href="{% url 'purser:compliance_detail' item.pk %}" class="btn btn-sm btn-outline-secondary">
+                            View
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-4">
+                        No compliance obligations found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

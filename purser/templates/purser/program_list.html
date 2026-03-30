@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load purser_tags %}
+
+{% block title %}Programs{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Programs</h2>
+    <a href="{% url 'purser:program_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> New Program
+    </a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Report Schema</th>
+                    <th>Harbor</th>
+                    <th>Active</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for program in programs %}
+                <tr>
+                    <td><strong>{{ program.code }}</strong></td>
+                    <td>{{ program.name }}</td>
+                    <td><span class="badge bg-secondary">{{ program.get_program_type_display }}</span></td>
+                    <td>{{ program.report_schema.name }}</td>
+                    <td>
+                        {% if program.pulls_from_harbor %}
+                        <span class="badge bg-info">Auto-pull</span>
+                        {% else %}
+                        <span class="text-muted">Manual</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if program.is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'purser:program_edit' program.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        No programs configured.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

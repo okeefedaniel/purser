@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if program %}Edit {{ program.code }}{% else %}New Program{% endif %}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'purser:program_list' %}">Programs</a></li>
+        <li class="breadcrumb-item active">{% if program %}{{ program.code }}{% else %}New{% endif %}</li>
+    </ol>
+</nav>
+
+<h2 class="mb-4">{% if program %}Edit {{ program.name }}{% else %}New Program{% endif %}</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a href="{% url 'purser:program_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

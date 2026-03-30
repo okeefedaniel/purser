@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load purser_tags %}
+
+{% block title %}Review Queue{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Review Queue</h2>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Program</th>
+                    <th>Period</th>
+                    <th>Status</th>
+                    <th>Submitted By</th>
+                    <th>Submitted</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in submissions %}
+                <tr>
+                    <td><strong>{{ sub.program.code }}</strong> — {{ sub.program.name }}</td>
+                    <td>{{ sub.fiscal_period.label }}</td>
+                    <td><span class="badge bg-{{ sub.status|status_color }}">{{ sub.get_status_display }}</span></td>
+                    <td>{{ sub.submitted_by.get_full_name|default:"—" }}</td>
+                    <td>{{ sub.submitted_at|date:"M j, Y g:i A"|default:"—" }}</td>
+                    <td>
+                        <a href="{% url 'purser:review_detail' sub.pk %}" class="btn btn-sm btn-outline-primary">
+                            Review
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        No submissions pending review.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

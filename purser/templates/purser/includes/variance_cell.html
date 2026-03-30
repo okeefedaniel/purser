@@ -1,0 +1,13 @@
+{% if variance is not None %}
+{% if variance > 10 %}
+<span class="text-danger fw-bold">+{{ variance|floatformat:1 }}%</span>
+{% elif variance > 0 %}
+<span class="text-warning">+{{ variance|floatformat:1 }}%</span>
+{% elif variance < -10 %}
+<span class="text-success fw-bold">{{ variance|floatformat:1 }}%</span>
+{% else %}
+<span class="text-success">{{ variance|floatformat:1 }}%</span>
+{% endif %}
+{% else %}
+<span class="text-muted">—</span>
+{% endif %}
