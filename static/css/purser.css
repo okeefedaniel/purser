@@ -1,36 +1,10 @@
-/* Purser — Financial Close & Compliance */
+/* Purser — Financial Close & Compliance
+   Product-specific styles only.
+   Base styles, colors, typography, navbar, sidebar, footer,
+   cards, tables, badges, forms → docklabs.css (from keel)
+*/
 
-body {
-    padding-top: 56px;
-}
-
-/* Sidebar */
-.sidebar {
-    min-height: calc(100vh - 56px);
-    border-right: 1px solid #dee2e6;
-}
-
-.sidebar .nav-link {
-    color: #333;
-    padding: 0.5rem 1rem;
-}
-
-.sidebar .nav-link:hover {
-    background-color: #e9ecef;
-}
-
-.sidebar .nav-link.active {
-    color: #0d6efd;
-    font-weight: 600;
-}
-
-.sidebar-heading {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-/* Dashboard grid cells */
+/* Dashboard grid badge min-width */
 .table td .badge {
     min-width: 80px;
 }
@@ -38,23 +12,5 @@ body {
 /* Submission form inline inputs */
 .table input.form-control-sm {
     max-width: 150px;
-    display: inline-block;
-}
-
-/* Status colors for cards */
-.card.border-danger .card-header {
-    border-bottom-color: #dc3545;
-}
-
-/* htmx loading indicator */
-.htmx-indicator {
-    display: none;
-}
-
-.htmx-request .htmx-indicator {
-    display: inline-block;
-}
-
-.htmx-request.htmx-indicator {
     display: inline-block;
 }

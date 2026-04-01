@@ -1,63 +1,56 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Purser — Financial Close &amp; Compliance</title>
+    <meta name="description" content="Purser — Financial close, variance reporting, and compliance tracking for DECD programs.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body { background: #f8f9fa; }
-        .hero { background: linear-gradient(135deg, #1a3a5c 0%, #2d6a9f 100%); color: white; padding: 80px 0 60px; }
-        .hero h1 { font-size: 2.75rem; font-weight: 700; }
-        .hero p { font-size: 1.15rem; opacity: .85; max-width: 580px; margin: 0 auto; }
-        .feature-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 1rem; }
-        .sign-in-card { border: none; box-shadow: 0 4px 24px rgba(0,0,0,.1); border-radius: 16px; }
-        .btn-microsoft { background: #2f2f2f; color: white; border: none; }
-        .btn-microsoft:hover { background: #1a1a1a; color: white; }
-        .docklabs-badge { font-size: .75rem; color: #6c757d; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="{% static 'css/docklabs.css' %}" rel="stylesheet">
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-dark" style="background: #1a3a5c;">
-    <div class="container">
-        <span class="navbar-brand fw-bold">
-            <i class="bi bi-safe2 me-2"></i>Purser
-        </span>
-        <span class="docklabs-badge">A DockLabs Product</span>
-    </div>
-</nav>
+<!-- WCAG: Skip link -->
+<a href="#main-content" class="visually-hidden-focusable bg-primary text-white p-2 position-absolute" style="z-index:9999">Skip to main content</a>
 
-<!-- Hero -->
-<div class="hero text-center">
-    <div class="container">
-        <h1 class="mb-3">Financial Close &amp; Compliance</h1>
-        <p class="lead mb-5">
-            Structured monthly close, variance reporting, and compliance tracking
-            for DECD programs — replacing spreadsheets with a single source of truth.
-        </p>
-    </div>
-</div>
+<header role="banner">
+    <!-- CT Brand Accent Bar -->
+    <div class="ct-accent-bar"></div>
 
-<!-- Sign-in card + features -->
-<div class="container py-5">
-    <div class="row justify-content-center g-5 align-items-start">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" role="navigation" aria-label="Main navigation">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-safe2 me-2"></i>Purser
+            </a>
+            <div class="ms-auto">
+                <a href="/accounts/login/" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>
 
-        <!-- Sign-in card -->
-        <div class="col-md-4">
-            <div class="card sign-in-card p-4">
-                <div class="text-center mb-4">
-                    <div class="feature-icon bg-primary bg-opacity-10 text-primary mx-auto">
-                        <i class="bi bi-shield-lock"></i>
-                    </div>
-                    <h5 class="fw-bold">DECD Staff Sign In</h5>
-                    <p class="text-muted small">Use your DECD Microsoft account to access Purser.</p>
-                </div>
+<main id="main-content">
+
+    <!-- Hero -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="mb-3">Financial Close &amp; Compliance</h1>
+            <p class="lead mb-5 mx-auto" style="max-width: 620px;">
+                Structured monthly close, variance reporting, and compliance tracking
+                for DECD programs — replacing spreadsheets with a single source of truth.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
                 <a href="/accounts/microsoft/login/?process=login"
-                   class="btn btn-microsoft btn-lg w-100 mb-3 d-flex align-items-center justify-content-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 21 21">
+                   class="btn btn-light btn-lg px-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 21 21" class="me-2" style="vertical-align:-.2em">
                         <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
                         <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
                         <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
@@ -65,55 +58,114 @@
                     </svg>
                     Sign in with Microsoft
                 </a>
-                <div class="text-center">
-                    <a href="/accounts/login/" class="text-muted small">Sign in with username &amp; password</a>
+                <a href="/accounts/login/" class="btn btn-outline-light btn-lg px-4">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign in with password
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar py-4">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-6 col-md-3 mb-3 mb-md-0">
+                    <div class="stat-value">7</div>
+                    <div class="stat-label">Programs</div>
+                </div>
+                <div class="col-6 col-md-3 mb-3 mb-md-0">
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">Fiscal Periods</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-value">9</div>
+                    <div class="stat-label">Compliance Templates</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Report Schemas</div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Features -->
-        <div class="col-md-7">
-            <h4 class="fw-bold mb-4">What Purser does</h4>
+    <!-- Features -->
+    <section class="py-5 bg-white">
+        <div class="container">
             <div class="row g-4">
-                <div class="col-sm-6">
-                    <div class="feature-icon bg-primary bg-opacity-10 text-primary">
+                <div class="col-md-3">
+                    <div class="step-icon">
                         <i class="bi bi-table"></i>
                     </div>
-                    <h6 class="fw-bold">Monthly Close Grid</h6>
-                    <p class="text-muted small">Program × period status at a glance. Submit, review, and approve financial reports in a structured workflow.</p>
+                    <h5 class="fw-bold text-center">Monthly Close Grid</h5>
+                    <p class="text-muted text-center small">
+                        Program × period status at a glance. Submit, review, and approve financial reports in a structured workflow.
+                    </p>
                 </div>
-                <div class="col-sm-6">
-                    <div class="feature-icon bg-success bg-opacity-10 text-success">
+                <div class="col-md-3">
+                    <div class="step-icon">
                         <i class="bi bi-graph-up-arrow"></i>
                     </div>
-                    <h6 class="fw-bold">Variance Analysis</h6>
-                    <p class="text-muted small">Automatic variance vs. prior period and vs. budget. Flags outliers before the close package is published.</p>
+                    <h5 class="fw-bold text-center">Variance Analysis</h5>
+                    <p class="text-muted text-center small">
+                        Automatic variance vs. prior period and vs. budget. Flags outliers before the close package is published.
+                    </p>
                 </div>
-                <div class="col-sm-6">
-                    <div class="feature-icon bg-warning bg-opacity-10 text-warning">
+                <div class="col-md-3">
+                    <div class="step-icon">
                         <i class="bi bi-clipboard2-check"></i>
                     </div>
-                    <h6 class="fw-bold">Compliance Tracking</h6>
-                    <p class="text-muted small">Document submission deadlines, certifications, and milestones — with automated reminders and escalation.</p>
+                    <h5 class="fw-bold text-center">Compliance Tracking</h5>
+                    <p class="text-muted text-center small">
+                        Document submission deadlines, certifications, and milestones with automated reminders and escalation.
+                    </p>
                 </div>
-                <div class="col-sm-6">
-                    <div class="feature-icon bg-info bg-opacity-10 text-info">
+                <div class="col-md-3">
+                    <div class="step-icon">
                         <i class="bi bi-box-arrow-in-right"></i>
                     </div>
-                    <h6 class="fw-bold">Harbor Integration</h6>
-                    <p class="text-muted small">Pulls fiscal activity data directly from Harbor — no manual re-entry of beginning balances or expenditures.</p>
+                    <h5 class="fw-bold text-center">Harbor Integration</h5>
+                    <p class="text-muted text-center small">
+                        Pulls fiscal activity directly from Harbor — no manual re-entry of beginning balances or expenditures.
+                    </p>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </section>
+
+</main>
 
 <!-- Footer -->
-<footer class="border-top py-3 mt-4">
-    <div class="container text-center">
-        <span class="text-muted small">
-            Purser is a <a href="https://docklabs.ai" class="text-muted">DockLabs</a> product built for the Connecticut Department of Economic and Community Development.
-        </span>
+<footer class="py-4 mt-auto" role="contentinfo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="fw-bold"><i class="bi bi-safe2 me-2"></i>Purser</h6>
+                <p class="small mb-0">
+                    Financial Close &amp; Compliance<br>
+                    Connecticut Department of Economic and Community Development
+                </p>
+            </div>
+            <div class="col-md-3">
+                <h6 class="fw-bold">DockLabs Suite</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="https://harbor.docklabs.ai">Harbor — Grants</a></li>
+                    <li><a href="https://beacon.docklabs.ai">Beacon — CRM</a></li>
+                    <li><a href="https://docklabs.ai">docklabs.ai</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h6 class="fw-bold">Contact</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="mailto:info@docklabs.ai"><i class="bi bi-envelope me-1"></i>info@docklabs.ai</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr class="my-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <p class="small mb-0">&copy; {% now "Y" %} DockLabs. All rights reserved.</p>
+            <p class="small mb-0">Part of the <a href="https://docklabs.ai">DockLabs</a> suite</p>
+        </div>
     </div>
 </footer>
 

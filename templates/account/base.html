@@ -1,18 +1,38 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block head_title %}Purser{% endblock %} — DockLabs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="{% static 'css/docklabs.css' %}" rel="stylesheet">
 </head>
 <body class="bg-light">
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-5">
+
+<!-- CT Brand Accent Bar -->
+<div class="ct-accent-bar"></div>
+
+<!-- Minimal navbar -->
+<nav class="navbar navbar-dark" role="navigation">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">
+            <i class="bi bi-safe2 me-2"></i>Purser
+        </a>
+        <span class="text-white-50 small">A DockLabs Product</span>
+    </div>
+</nav>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
             <div class="text-center mb-4">
-                <h3 class="fw-bold">Purser</h3>
+                <i class="bi bi-safe2 text-primary" style="font-size: 2.5rem;"></i>
+                <h4 class="fw-bold mt-2">Purser</h4>
                 <p class="text-muted small">Financial Close &amp; Compliance — DECD</p>
             </div>
             <div class="card shadow-sm">
@@ -20,9 +40,13 @@
                     {% block content %}{% endblock %}
                 </div>
             </div>
+            <p class="text-center text-muted small mt-3">
+                <a href="/" class="text-muted"><i class="bi bi-arrow-left me-1"></i>Back to home</a>
+            </p>
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
