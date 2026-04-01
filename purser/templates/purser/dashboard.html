@@ -76,9 +76,9 @@
                     <td><strong>{{ program.code }}</strong> — {{ program.name }}</td>
                     <td><span class="badge bg-secondary">{{ program.get_program_type_display }}</span></td>
                     {% for period in periods %}
-                    {% with key=program.pk|add:period.pk %}
                     <td class="text-center">
-                        {% with sub=grid|get_item:program.pk %}
+                        {% with prog_subs=grid|get_item:program.pk %}
+                        {% with sub=prog_subs|get_item:period.pk %}
                         {% if sub %}
                         <a href="{% url 'purser:submission_form' program.code period.pk %}"
                            class="badge bg-{{ sub.status|status_color }} text-decoration-none">
@@ -91,8 +91,8 @@
                         </a>
                         {% endif %}
                         {% endwith %}
+                        {% endwith %}
                     </td>
-                    {% endwith %}
                     {% endfor %}
                 </tr>
                 {% empty %}

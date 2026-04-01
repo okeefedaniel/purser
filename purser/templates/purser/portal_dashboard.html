@@ -31,7 +31,7 @@
                         </span>
                     </td>
                     <td>
-                        {% if item.status in 'pending,overdue' %}
+                        {% if item.status == 'pending' or item.status == 'overdue' %}
                         <a href="{% url 'purser:compliance_detail' item.pk %}" class="btn btn-sm btn-primary">
                             <i class="bi bi-upload"></i> Upload
                         </a>

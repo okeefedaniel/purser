@@ -47,7 +47,7 @@ def dashboard(request):
 
     grid = {}
     for sub in submissions:
-        grid[(sub.program_id, sub.fiscal_period_id)] = sub
+        grid.setdefault(sub.program_id, {})[sub.fiscal_period_id] = sub
 
     # Current period stats
     current_period = periods.filter(
@@ -89,7 +89,7 @@ def submission_form(request, program_code, period_id):
     )
 
     # Get line items for this schema
-    line_items = program.report_schema.line_items.order_by('sort_order')
+    line_items = program.report_schema.line_items.order_by('group', 'sort_order')
 
     # Get or create line values
     values = {}
