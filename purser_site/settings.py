@@ -226,12 +226,14 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ---------------------------------------------------------------------------
-# Email
+# Email — Resend HTTP API for transactional emails (Railway blocks outbound SMTP)
 # ---------------------------------------------------------------------------
-EMAIL_BACKEND = os.environ.get(
-    'EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend'
-)
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'purser@docklabs.ai')
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'keel.notifications.backends.resend_backend.ResendEmailBackend'
+
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'DockLabs <info@docklabs.ai>')
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
 
 # ---------------------------------------------------------------------------
