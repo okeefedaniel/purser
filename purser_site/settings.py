@@ -165,7 +165,9 @@ SOCIALACCOUNT_PROVIDERS = {
 # ---------------------------------------------------------------------------
 # Keel
 # ---------------------------------------------------------------------------
-KEEL_PRODUCT_NAME = 'purser'
+KEEL_PRODUCT_NAME = 'Purser'
+KEEL_PRODUCT_ICON = 'bi-safe2'
+KEEL_PRODUCT_SUBTITLE = 'Financial Management'
 KEEL_GATE_ACCESS = True
 KEEL_AUDIT_LOG_MODEL = 'core.AuditLog'
 KEEL_NOTIFICATION_MODEL = 'core.Notification'
