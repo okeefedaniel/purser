@@ -1,0 +1,10 @@
+{% extends "account/base.html" %}
+
+{% block head_title %}Log In{% endblock %}
+
+{% block content %}
+{% url 'microsoft_login' as ms_url %}
+{% with microsoft_login_url=ms_url %}
+  {% include "keel/login_card.html" %}
+{% endwith %}
+{% endblock %}
