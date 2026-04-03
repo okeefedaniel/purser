@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from keel.core.models import KeelBaseModel
+from keel.core.models import KeelBaseModel, AbstractStatusHistory
 
 
 class Program(KeelBaseModel):
@@ -223,3 +223,13 @@ class BudgetBaseline(KeelBaseModel):
 
     def __str__(self):
         return f"{self.program.code} — {self.line_item.code} — {self.fiscal_year.name}"
+
+
+class SubmissionStatusHistory(AbstractStatusHistory):
+    """Immutable audit trail of submission status transitions."""
+    submission = models.ForeignKey(
+        'Submission', on_delete=models.CASCADE, related_name='status_history',
+    )
+
+    class Meta(AbstractStatusHistory.Meta):
+        verbose_name_plural = 'submission status histories'

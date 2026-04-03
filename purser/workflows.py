@@ -2,7 +2,8 @@
 from keel.core.workflow import Transition, WorkflowEngine
 
 
-SUBMISSION_WORKFLOW = WorkflowEngine([
+SUBMISSION_WORKFLOW = WorkflowEngine(
+    transitions=[
     Transition(
         'draft', 'submitted',
         roles=['purser_submitter', 'purser_admin'],
@@ -35,7 +36,10 @@ SUBMISSION_WORKFLOW = WorkflowEngine([
         roles=['purser_admin'],
         label='Close',
     ),
-])
+    ],
+    history_model='purser.SubmissionStatusHistory',
+    history_fk_field='submission',
+)
 
 
 COMPLIANCE_WORKFLOW = WorkflowEngine([
