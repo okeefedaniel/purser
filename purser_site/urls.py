@@ -3,8 +3,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+from keel.core.demo import demo_login_view
 
 urlpatterns = [
+    path('demo-login/', demo_login_view, name='demo_login'),
     path('', TemplateView.as_view(template_name='landing.html'), name='landing'),
     path('admin/', admin.site.urls),
 
