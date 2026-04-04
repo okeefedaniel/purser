@@ -154,35 +154,40 @@
 </div>
 
 <!-- Footer -->
-<footer class="py-4 mt-auto" role="contentinfo">
+<footer class="bg-dark text-light py-4 mt-auto" role="contentinfo">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
                 <h6 class="fw-bold"><i class="bi bi-safe2 me-2"></i>Purser</h6>
-                <p class="small mb-0">
+                <p class="small text-muted mb-0">
                     Financial Close &amp; Compliance<br>
-                    Connecticut Department of Economic and Community Development
+                    Part of the DockLabs suite
                 </p>
             </div>
             <div class="col-md-3">
                 <h6 class="fw-bold">Quick Links</h6>
                 <ul class="list-unstyled small">
-                    <li><a href="{% url 'purser:dashboard' %}">Close Dashboard</a></li>
-                    <li><a href="{% url 'purser:compliance_dashboard' %}">Compliance</a></li>
-                    <li><a href="{% url 'purser:review_queue' %}">Review Queue</a></li>
+                    <li><a href="{% url 'purser:dashboard' %}" class="text-muted text-decoration-none">Close Dashboard</a></li>
+                    <li><a href="{% url 'purser:compliance_dashboard' %}" class="text-muted text-decoration-none">Compliance</a></li>
+                    <li><a href="{% url 'purser:review_queue' %}" class="text-muted text-decoration-none">Review Queue</a></li>
                 </ul>
             </div>
             <div class="col-md-3">
                 <h6 class="fw-bold">Contact</h6>
-                <ul class="list-unstyled small">
-                    <li><a href="mailto:info@docklabs.ai"><i class="bi bi-envelope me-1"></i>info@docklabs.ai</a></li>
+                <ul class="list-unstyled small text-muted">
+                    <li><a href="mailto:info@docklabs.ai" class="text-muted text-decoration-none"><i class="bi bi-envelope me-1"></i> info@docklabs.ai</a></li>
                 </ul>
             </div>
         </div>
-        <hr class="my-3">
+        <hr class="my-3 border-secondary">
         <div class="d-flex justify-content-between align-items-center">
-            <p class="small mb-0">&copy; {% now "Y" %} DockLabs. All rights reserved.</p>
-            <p class="small mb-0">Part of the <a href="https://docklabs.ai">DockLabs</a> suite</p>
+            <p class="text-muted small mb-0">
+                &copy; {% now "Y" %} DockLabs. All rights reserved.
+            </p>
+            <p class="small mb-0">
+                <a href="#" class="text-muted text-decoration-none me-3">Privacy Policy</a>
+                <a href="#" class="text-muted text-decoration-none">Terms of Service</a>
+            </p>
         </div>
     </div>
 </footer>
