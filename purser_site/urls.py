@@ -5,10 +5,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView, TemplateView
 from keel.core.demo import demo_login_view
+from keel.core.views import health_check, robots_txt
 
 from core.forms import LoginForm
 
 urlpatterns = [
+    path('health/', health_check, name='health_check'),
+    path('robots.txt', robots_txt, name='robots_txt'),
     path('demo-login/', demo_login_view, name='demo_login'),
     path('', TemplateView.as_view(template_name='landing.html'), name='landing'),
     path('admin/', admin.site.urls),
