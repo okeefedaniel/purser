@@ -1,11 +1,12 @@
-from allauth.account import views as allauth_views
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView, TemplateView
 from keel.core.demo import demo_login_view
+
+from core.forms import LoginForm
 
 urlpatterns = [
     path('demo-login/', demo_login_view, name='demo_login'),
@@ -13,10 +14,17 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Auth — explicit login/logout with our template, before allauth catch-all
-    path('accounts/login/', allauth_views.LoginView.as_view(
+    path('auth/login/', LoginView.as_view(
         template_name='account/login.html',
+        authentication_form=LoginForm,
     ), name='account_login'),
-    path('accounts/logout/', auth_views.LogoutView.as_view(), name='account_logout'),
+    path('auth/logout/', LogoutView.as_view(), name='account_logout'),
+    # Convenience named URL for the "Sign in with Microsoft" button
+    path(
+        'auth/sso/microsoft/',
+        RedirectView.as_view(url='/accounts/microsoft/login/?process=login', query_string=False),
+        name='microsoft_login',
+    ),
 
     # Purser app
     path('purser/', include('purser.urls')),

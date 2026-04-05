@@ -24,7 +24,7 @@ if not SECRET_KEY:
         raise ImproperlyConfigured('DJANGO_SECRET_KEY must be set in production')
 
 DEMO_MODE = os.environ.get('DEMO_MODE', 'False').lower() in ('true', '1', 'yes')
-DEMO_ROLES = ['purser_submitter', 'purser_reviewer', 'purser_admin']
+DEMO_ROLES = ['purser_admin', 'purser_submitter', 'purser_reviewer', 'purser_compliance_officer', 'purser_readonly', 'external_submitter']
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'keel.core',
     'keel.security',
     'keel.notifications',
+    'keel.requests',
     'keel.periods',
     'keel.reporting',
     'keel.compliance',
@@ -133,9 +134,9 @@ if DATABASE_URL:
 # Auth
 # ---------------------------------------------------------------------------
 AUTH_USER_MODEL = 'keel_accounts.KeelUser'
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/purser/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGOUT_REDIRECT_URL = '/'
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -144,32 +145,46 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# Minimum password length (match all DockLabs products)
+AUTH_PASSWORD_VALIDATORS[1]['OPTIONS'] = {'min_length': 10}
+
 # ---------------------------------------------------------------------------
-# Allauth (SSO)
+# Allauth (SSO / MFA)
 # ---------------------------------------------------------------------------
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_ADAPTER = 'keel.core.sso.KeelAccountAdapter'
 
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+_MSFT_TENANT = os.environ.get('MICROSOFT_TENANT_ID', 'common')
 SOCIALACCOUNT_PROVIDERS = {
     'microsoft': {
         'APP': {
             'client_id': os.environ.get('MICROSOFT_CLIENT_ID', ''),
             'secret': os.environ.get('MICROSOFT_CLIENT_SECRET', ''),
         },
-        'TENANT': os.environ.get('MICROSOFT_TENANT_ID', 'common'),
         'SCOPE': ['openid', 'email', 'profile', 'User.Read'],
+        'AUTH_PARAMS': {'prompt': 'select_account'},
+        'TENANT': _MSFT_TENANT,
     },
 }
+
+MFA_ADAPTER = 'allauth.mfa.adapter.DefaultMFAAdapter'
+MFA_SUPPORTED_TYPES = ['totp', 'webauthn', 'recovery_codes']
+MFA_TOTP_ISSUER = 'Purser'
+MFA_PASSKEY_LOGIN_ENABLED = True
 
 # ---------------------------------------------------------------------------
 # Keel
 # ---------------------------------------------------------------------------
-KEEL_PRODUCT_NAME = 'Purser'
+KEEL_PRODUCT_NAME = 'purser'
 KEEL_PRODUCT_ICON = 'bi-safe2'
 KEEL_PRODUCT_SUBTITLE = 'Financial Management'
 KEEL_GATE_ACCESS = True
