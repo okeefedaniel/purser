@@ -1,7 +1,7 @@
 /* Purser — Financial Close & Compliance
    Product-specific styles only.
-   Base styles, colors, typography, navbar, sidebar, footer,
-   cards, tables, badges, forms → docklabs.css (from keel)
+   Base layout, sidebar, topbar, fleet switcher → docklabs-v2.css (Warm Harbor v2)
+   Cards, tables, badges, forms → docklabs-v2.css (from keel)
 */
 
 /* Dashboard grid badge min-width */
