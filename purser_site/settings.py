@@ -184,7 +184,7 @@ MFA_PASSKEY_LOGIN_ENABLED = True
 # ---------------------------------------------------------------------------
 # Keel
 # ---------------------------------------------------------------------------
-KEEL_PRODUCT_NAME = 'purser'
+KEEL_PRODUCT_NAME = 'Purser'
 KEEL_PRODUCT_ICON = 'bi-safe2'
 KEEL_PRODUCT_SUBTITLE = 'Financial Management'
 KEEL_GATE_ACCESS = True
