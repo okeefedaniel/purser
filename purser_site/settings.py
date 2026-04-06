@@ -197,10 +197,10 @@ KEEL_PRODUCT_NAME = 'Purser'
 KEEL_PRODUCT_ICON = 'bi-safe2'
 KEEL_PRODUCT_SUBTITLE = 'Financial Management'
 KEEL_GATE_ACCESS = True
-KEEL_AUDIT_LOG_MODEL = 'core.AuditLog'
-KEEL_NOTIFICATION_MODEL = 'core.Notification'
-KEEL_NOTIFICATION_PREFERENCE_MODEL = 'core.NotificationPreference'
-KEEL_NOTIFICATION_LOG_MODEL = 'core.NotificationLog'
+KEEL_AUDIT_LOG_MODEL = 'purser_core.AuditLog'
+KEEL_NOTIFICATION_MODEL = 'purser_core.Notification'
+KEEL_NOTIFICATION_PREFERENCE_MODEL = 'purser_core.NotificationPreference'
+KEEL_NOTIFICATION_LOG_MODEL = 'purser_core.NotificationLog'
 KEEL_API_KEY = os.environ.get('KEEL_API_KEY', '')
 KEEL_API_URL = os.environ.get('KEEL_API_URL', 'https://keel.docklabs.ai')
 
