@@ -10,13 +10,87 @@ and Harbor integration for grant program reconciliation.
 {% block dashboard_url %}/purser/{% endblock %}
 
 {% block landing_stats %}
-{% include "keel/landing/_stats_bar.html" with stats=landing_stats %}
+<section class="stats-bar">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-md-3 col-6 mb-3 mb-md-0">
+        <div class="stat-value">Monthly</div>
+        <div class="stat-label">Close Cycle</div>
+      </div>
+      <div class="col-md-3 col-6 mb-3 mb-md-0">
+        <div class="stat-value">Variance</div>
+        <div class="stat-label">Analysis</div>
+      </div>
+      <div class="col-md-3 col-6 mb-3 mb-md-0">
+        <div class="stat-value">Compliance</div>
+        <div class="stat-label">Tracking</div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-value">Harbor</div>
+        <div class="stat-label">Integration</div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
 
 {% block landing_features %}
-{% include "keel/landing/_features.html" with title="Financial Close & Compliance" features=landing_features %}
+<section class="landing-section">
+  <div class="container">
+    <h2 class="text-center">Financial Close &amp; Compliance</h2>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-calendar-check"></i></div>
+          <h5>Monthly Close</h5>
+          <p>Run your fiscal close cycle with submission tracking, review queues, and automated reminder workflows.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon teal"><i class="bi bi-bar-chart"></i></div>
+          <h5>Variance Analysis</h5>
+          <p>Track budget vs. actual at every grant program level with drill-down to source transactions.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon yellow"><i class="bi bi-clipboard-check"></i></div>
+          <h5>Compliance Tracking</h5>
+          <p>Manage federal and state compliance obligations with template-driven checklists and audit trails.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
 
 {% block landing_how_it_works %}
-{% include "keel/landing/_how_it_works.html" with steps=landing_steps %}
+<section class="landing-section alt">
+  <div class="container">
+    <h2 class="text-center">How It Works</h2>
+    <div class="row g-4 text-center">
+      <div class="col-md-6 col-lg-3">
+        <div class="step-icon">1</div>
+        <h5 class="fw-bold">Configure Periods</h5>
+        <p class="text-muted">Set up fiscal periods, grant programs, and compliance schedules.</p>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="step-icon">2</div>
+        <h5 class="fw-bold">Track Submissions</h5>
+        <p class="text-muted">Monitor monthly close packages from agency submitters.</p>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="step-icon">3</div>
+        <h5 class="fw-bold">Review &amp; Approve</h5>
+        <p class="text-muted">Variance analysis flags exceptions for fiscal officer review.</p>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="step-icon">4</div>
+        <h5 class="fw-bold">Close &amp; Audit</h5>
+        <p class="text-muted">Lock periods, generate reports, and maintain a full audit trail.</p>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
