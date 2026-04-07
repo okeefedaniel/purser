@@ -306,7 +306,9 @@ LOGGING = {
 # Security (production)
 # ---------------------------------------------------------------------------
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    # Railway's proxy handles HTTP→HTTPS redirect; don't do it in Django
+    # (breaks Railway's internal healthcheck which sends plain HTTP)
+    SECURE_SSL_REDIRECT = False
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
