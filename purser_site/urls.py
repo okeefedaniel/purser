@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView, TemplateView
 from keel.core.demo import demo_login_view
-from keel.core.views import health_check, robots_txt
+from keel.core.views import health_check, robots_txt, LandingView
 
 from core.forms import LoginForm
 
@@ -13,7 +13,32 @@ urlpatterns = [
     path('health/', health_check, name='health_check'),
     path('robots.txt', robots_txt, name='robots_txt'),
     path('demo-login/', demo_login_view, name='demo_login'),
-    path('', TemplateView.as_view(template_name='landing.html'), name='landing'),
+    path('', LandingView.as_view(
+        template_name='landing.html',
+        stats=[
+            {'value': 'Monthly', 'label': 'Close Cycle'},
+            {'value': 'Variance', 'label': 'Analysis'},
+            {'value': 'Compliance', 'label': 'Tracking'},
+            {'value': 'Harbor', 'label': 'Integration'},
+        ],
+        features=[
+            {'icon': 'bi-calendar-check', 'title': 'Monthly Close',
+             'description': 'Run your fiscal close cycle with submission tracking, review queues, and automated reminder workflows.',
+             'color': 'blue'},
+            {'icon': 'bi-bar-chart', 'title': 'Variance Analysis',
+             'description': 'Track budget vs. actual at every grant program level with drill-down to source transactions.',
+             'color': 'teal'},
+            {'icon': 'bi-clipboard-check', 'title': 'Compliance Tracking',
+             'description': 'Manage federal and state compliance obligations with template-driven checklists and audit trails.',
+             'color': 'yellow'},
+        ],
+        steps=[
+            {'title': 'Configure Periods', 'description': 'Set up fiscal periods, grant programs, and compliance schedules.'},
+            {'title': 'Track Submissions', 'description': 'Monitor monthly close packages from agency submitters.'},
+            {'title': 'Review & Approve', 'description': 'Variance analysis flags exceptions for fiscal officer review.'},
+            {'title': 'Close & Audit', 'description': 'Lock periods, generate reports, and maintain a full audit trail.'},
+        ],
+    ), name='landing'),
     path('admin/', admin.site.urls),
 
     # Auth — explicit login/logout with our template, before allauth catch-all
