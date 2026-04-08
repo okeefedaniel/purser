@@ -1,11 +1,11 @@
 from django.contrib import admin
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView, TemplateView
 from keel.core.demo import demo_login_view
-from keel.core.views import health_check, robots_txt
+from keel.core.views import health_check, robots_txt, SuiteLogoutView
 
 from core.forms import LoginForm
 from purser.views import dashboard as purser_dashboard
@@ -26,7 +26,7 @@ urlpatterns = [
         template_name='account/login.html',
         authentication_form=LoginForm,
     ), name='account_login'),
-    path('auth/logout/', LogoutView.as_view(), name='account_logout'),
+    path('auth/logout/', SuiteLogoutView.as_view(), name='account_logout'),
     # Convenience named URL for the "Sign in with Microsoft" button
     path(
         'auth/sso/microsoft/',
