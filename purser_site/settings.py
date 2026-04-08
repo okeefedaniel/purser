@@ -306,14 +306,6 @@ RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
 SESSION_COOKIE_AGE = 3600  # 1 hour
 SESSION_SAVE_EVERY_REQUEST = True
 
-# Suite mode: shared session cookie across *.docklabs.ai
-KEEL_SUITE_DOMAIN = os.environ.get('KEEL_SUITE_DOMAIN')
-if KEEL_SUITE_DOMAIN:
-    SESSION_COOKIE_DOMAIN = KEEL_SUITE_DOMAIN
-    SESSION_COOKIE_NAME = 'docklabs_sessionid'
-    CSRF_COOKIE_DOMAIN = KEEL_SUITE_DOMAIN
-    CSRF_COOKIE_NAME = 'docklabs_csrftoken'
-
 # ---------------------------------------------------------------------------
 # Logging — surface errors to stdout for Railway
 # ---------------------------------------------------------------------------
