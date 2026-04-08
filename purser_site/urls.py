@@ -8,16 +8,17 @@ from keel.core.demo import demo_login_view
 from keel.core.views import health_check, robots_txt
 
 from core.forms import LoginForm
+from purser.views import dashboard as purser_dashboard
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
     path('robots.txt', robots_txt, name='robots_txt'),
     path('demo-login/', demo_login_view, name='demo_login'),
     path('', TemplateView.as_view(template_name='landing.html'), name='landing'),
-    # Canonical suite-wide post-login URL. Aliases Purser's real
-    # dashboard (/purser/) so every DockLabs product lands at
-    # /dashboard/ after login.
-    path('dashboard/', RedirectView.as_view(url='/purser/', permanent=False), name='dashboard_alias'),
+    # Canonical suite-wide post-login URL. Mounts the real Purser
+    # dashboard view directly so the URL bar stays at /dashboard/.
+    # The legacy /purser/ URL still works.
+    path('dashboard/', purser_dashboard, name='dashboard_alias'),
     path('admin/', admin.site.urls),
 
     # Auth — explicit login/logout with our template, before allauth catch-all
