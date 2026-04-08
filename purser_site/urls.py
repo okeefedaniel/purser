@@ -14,6 +14,10 @@ urlpatterns = [
     path('robots.txt', robots_txt, name='robots_txt'),
     path('demo-login/', demo_login_view, name='demo_login'),
     path('', TemplateView.as_view(template_name='landing.html'), name='landing'),
+    # Canonical suite-wide post-login URL. Aliases Purser's real
+    # dashboard (/purser/) so every DockLabs product lands at
+    # /dashboard/ after login.
+    path('dashboard/', RedirectView.as_view(url='/purser/', permanent=False), name='dashboard_alias'),
     path('admin/', admin.site.urls),
 
     # Auth — explicit login/logout with our template, before allauth catch-all
