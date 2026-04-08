@@ -1,17 +1,6 @@
 #!/bin/bash
 set -e
 
-# Force-reinstall keel at runtime to dodge nixpacks/pip install caching.
-# Without this, a stale `keel==0.8.0` from an earlier build silently
-# shadows the pinned commit in requirements.txt and we ship old code.
-# Once the version-bump-on-every-release pattern is established for
-# all products, this can be removed.
-echo "Re-resolving keel from requirements.txt..."
-KEEL_LINE=$(grep -E '^keel @' requirements.txt || true)
-if [ -n "$KEEL_LINE" ]; then
-    pip install --upgrade --force-reinstall --no-deps "$KEEL_LINE" || true
-fi
-
 echo "Running migrations..."
 python manage.py migrate --noinput
 
