@@ -137,7 +137,7 @@ if DATABASE_URL:
 # Auth
 # ---------------------------------------------------------------------------
 AUTH_USER_MODEL = 'keel_accounts.KeelUser'
-LOGIN_URL = '/auth/login/'
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 

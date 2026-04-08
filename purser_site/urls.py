@@ -21,12 +21,14 @@ urlpatterns = [
     path('dashboard/', purser_dashboard, name='dashboard_alias'),
     path('admin/', admin.site.urls),
 
-    # Auth — explicit login/logout with our template, before allauth catch-all
-    path('auth/login/', LoginView.as_view(
+    # Custom login/logout views using the shared keel LoginForm so the
+    # input fields render with Bootstrap styling. Mounted before the
+    # allauth include so they shadow allauth's bare LoginView.
+    path('accounts/login/', LoginView.as_view(
         template_name='account/login.html',
         authentication_form=LoginForm,
     ), name='account_login'),
-    path('auth/logout/', SuiteLogoutView.as_view(), name='account_logout'),
+    path('accounts/logout/', SuiteLogoutView.as_view(), name='account_logout'),
     # Convenience named URL for the "Sign in with Microsoft" button
     path(
         'auth/sso/microsoft/',
