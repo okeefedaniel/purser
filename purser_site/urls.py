@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 from django.views.generic import RedirectView, TemplateView
 from keel.core.demo import demo_login_view
 from keel.core.views import health_check, robots_txt, SuiteLogoutView
+from keel.core.search_views import search_view
 
 from core.forms import LoginForm
 from purser.views import dashboard as purser_dashboard
@@ -40,6 +41,7 @@ urlpatterns = [
     path('purser/', include('purser.urls')),
 
     # Keel accounts
+    path('search/', search_view, name='search'),
     path('keel/', include('keel.accounts.urls')),
 
     # Allauth (SSO + remaining account URLs)
