@@ -30,10 +30,10 @@ def purser_helm_feed(request):
     close_progress = 0
     if latest_close:
         close_status = latest_close.get_status_display()
-        # Calculate progress as percentage of submissions approved
-        total_subs = Submission.objects.filter(close_package=latest_close).count()
+        # Calculate progress as percentage of submissions approved for this period
+        total_subs = Submission.objects.filter(fiscal_period=latest_close.fiscal_period).count()
         approved_subs = Submission.objects.filter(
-            close_package=latest_close,
+            fiscal_period=latest_close.fiscal_period,
             status='approved',
         ).count()
         if total_subs > 0:
