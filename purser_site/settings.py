@@ -238,6 +238,7 @@ KEEL_NOTIFICATION_MODEL = 'purser_core.Notification'
 KEEL_NOTIFICATION_PREFERENCE_MODEL = 'purser_core.NotificationPreference'
 KEEL_NOTIFICATION_LOG_MODEL = 'purser_core.NotificationLog'
 KEEL_API_KEY = os.environ.get('KEEL_API_KEY', '')
+HELM_FEED_API_KEY = os.environ.get('HELM_FEED_API_KEY', '')
 KEEL_API_URL = os.environ.get('KEEL_API_URL', 'https://keel.docklabs.ai')
 
 # ---------------------------------------------------------------------------

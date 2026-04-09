@@ -9,6 +9,7 @@ from keel.core.views import health_check, robots_txt, SuiteLogoutView
 from keel.core.search_views import search_view
 
 from core.forms import LoginForm
+from purser.helm_feed import purser_helm_feed
 from purser.views import dashboard as purser_dashboard
 
 urlpatterns = [
@@ -37,6 +38,8 @@ urlpatterns = [
         name='microsoft_login',
     ),
 
+    # Helm executive dashboard feed
+    path('api/v1/helm-feed/', purser_helm_feed, name='helm-feed'),
     # Purser app
     path('purser/', include('purser.urls')),
 
