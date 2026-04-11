@@ -13,6 +13,8 @@ from purser.helm_feed import purser_helm_feed
 from purser.views import dashboard as purser_dashboard
 
 urlpatterns = [
+    # Support (shared keel page — linked from 500.html)
+    path('support/', TemplateView.as_view(template_name='keel/support.html'), name='support'),
     path('health/', health_check, name='health_check'),
     path('robots.txt', robots_txt, name='robots_txt'),
     path('demo-login/', demo_login_view, name='demo_login'),
