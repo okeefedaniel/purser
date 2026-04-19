@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView, TemplateView
 from keel.core.demo import demo_login_view
-from keel.core.views import health_check, robots_txt, SuiteLogoutView
+from keel.core.views import health_check, robots_txt, favicon_view, SuiteLogoutView
 from keel.core.search_views import search_view
 
 from core.forms import LoginForm
@@ -17,6 +17,7 @@ urlpatterns = [
     path('support/', TemplateView.as_view(template_name='keel/support.html'), name='support'),
     path('health/', health_check, name='health_check'),
     path('robots.txt', robots_txt, name='robots_txt'),
+    path('favicon.ico', favicon_view, name='favicon'),
     path('demo-login/', demo_login_view, name='demo_login'),
     path('', TemplateView.as_view(template_name='landing.html'), name='landing'),
     # Canonical suite-wide post-login URL. Mounts the real Purser
@@ -48,6 +49,7 @@ urlpatterns = [
     # Keel accounts
     path('search/', search_view, name='search'),
     path('keel/', include('keel.accounts.urls')),
+    path('notifications/', include('keel.notifications.urls')),
 
     # Allauth (SSO + remaining account URLs)
     path('accounts/', include('allauth.urls')),

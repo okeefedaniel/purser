@@ -307,7 +307,7 @@ RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
 # ---------------------------------------------------------------------------
 # Session
 # ---------------------------------------------------------------------------
-SESSION_COOKIE_AGE = 3600  # 1 hour
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 days (pre-gov-launch; tighten before go-live)
 SESSION_SAVE_EVERY_REQUEST = True
 
 # ---------------------------------------------------------------------------
