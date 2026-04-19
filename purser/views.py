@@ -2,6 +2,7 @@
 from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -24,6 +25,31 @@ def _check_role(user, allowed_roles):
     """Check if user has one of the allowed Purser roles."""
     role = getattr(user, 'role', '') or ''
     return role in allowed_roles or role == 'purser_admin'
+
+
+def _user_can_edit_program(user, program) -> bool:
+    """Agency/team scoping for a program submission.
+
+    A user may touch a Program's submission state only when any of:
+      * they are a Purser admin / system admin
+      * they are in the Program's ``submitters`` team
+      * they are in the Program's ``reviewers`` team (for save/review)
+
+    Combined with ``_check_role`` this prevents any logged-in Keel user
+    from mutating another agency's submissions by POSTing to the htmx
+    ``save_line_value`` endpoint (IDOR #103) or instantiating arbitrary
+    submissions via ``submission_form`` (#104).
+    """
+    if not user.is_authenticated:
+        return False
+    role = getattr(user, 'role', '') or ''
+    if role in ('purser_admin', 'system_admin') or getattr(user, 'is_superuser', False):
+        return True
+    if program.submitters.filter(pk=user.pk).exists():
+        return True
+    if program.reviewers.filter(pk=user.pk).exists():
+        return True
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -82,6 +108,11 @@ def submission_form(request, program_code, period_id):
     """Submission form — chart of accounts as editable form."""
     program = get_object_or_404(Program, code=program_code)
     period = get_object_or_404(FiscalPeriod, pk=period_id)
+
+    if not _check_role(request.user, ['purser_submitter', 'purser_reviewer']):
+        raise PermissionDenied('Not authorized for Purser submissions.')
+    if not _user_can_edit_program(request.user, program):
+        raise PermissionDenied('Not a member of this program.')
 
     submission, created = Submission.objects.get_or_create(
         program=program, fiscal_period=period,
@@ -144,8 +175,18 @@ def submission_form(request, program_code, period_id):
 @require_POST
 def save_line_value(request, value_id):
     """htmx endpoint — save a single line value inline."""
-    value = get_object_or_404(SubmissionLineValue, pk=value_id)
+    value = get_object_or_404(
+        SubmissionLineValue.objects.select_related(
+            'submission__program',
+        ),
+        pk=value_id,
+    )
     submission = value.submission
+
+    if not _check_role(request.user, ['purser_submitter', 'purser_reviewer']):
+        return JsonResponse({'error': 'forbidden'}, status=403)
+    if not _user_can_edit_program(request.user, submission.program):
+        return JsonResponse({'error': 'forbidden'}, status=403)
 
     if submission.status not in ('draft', 'revision_requested'):
         return JsonResponse({'error': 'Submission is not editable'}, status=400)
@@ -165,7 +206,14 @@ def save_line_value(request, value_id):
 @require_POST
 def transition_submission(request, submission_id, target_status):
     """Execute a workflow transition on a submission."""
-    submission = get_object_or_404(Submission, pk=submission_id)
+    submission = get_object_or_404(
+        Submission.objects.select_related('program'),
+        pk=submission_id,
+    )
+    if not _check_role(request.user, ['purser_submitter', 'purser_reviewer']):
+        raise PermissionDenied('Not authorized for Purser submissions.')
+    if not _user_can_edit_program(request.user, submission.program):
+        raise PermissionDenied('Not a member of this program.')
     comment = request.POST.get('comment', '')
 
     SUBMISSION_WORKFLOW.execute(
@@ -280,17 +328,27 @@ def compliance_detail(request, item_id):
 # ---------------------------------------------------------------------------
 @login_required
 def portal_dashboard(request):
-    """External submitter portal — their compliance obligations."""
-    # Filter obligations for this user's organization
-    # Uses GenericFK, so we filter by recipient
+    """External submitter portal — their compliance obligations.
+
+    Scopes ``ComplianceItem`` rows to the requesting user's Agency via the
+    GenericFK ``recipient`` field. Without this filter, every external
+    submitter could see every agency's obligations (finding #112).
+    """
     from django.contrib.contenttypes.models import ContentType
 
-    items = ComplianceItem.objects.filter(
-        status__in=['upcoming', 'pending', 'overdue', 'submitted',
-                     'under_review', 'accepted', 'rejected'],
-    ).select_related(
-        'obligation', 'obligation__template',
-    ).order_by('due_date')
+    user = request.user
+    agency = getattr(user, 'agency', None)
+    items = ComplianceItem.objects.none()
+    if agency is not None:
+        agency_ct = ContentType.objects.get_for_model(agency.__class__)
+        items = ComplianceItem.objects.filter(
+            recipient_content_type=agency_ct,
+            recipient_object_id=agency.pk,
+            status__in=['upcoming', 'pending', 'overdue', 'submitted',
+                        'under_review', 'accepted', 'rejected'],
+        ).select_related(
+            'obligation', 'obligation__template',
+        ).order_by('due_date')
 
     return render(request, 'purser/portal_dashboard.html', {
         'items': items,

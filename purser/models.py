@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from keel.core.models import KeelBaseModel, AbstractStatusHistory
+from keel.security.scanning import FileSecurityValidator
 
 
 class Program(KeelBaseModel):
@@ -136,7 +137,10 @@ class SubmissionAttachment(KeelBaseModel):
     submission = models.ForeignKey(
         Submission, on_delete=models.CASCADE, related_name='attachments',
     )
-    file = models.FileField(upload_to='submissions/attachments/%Y/%m/')
+    file = models.FileField(
+        upload_to='submissions/attachments/%Y/%m/',
+        validators=[FileSecurityValidator()],
+    )
     filename = models.CharField(max_length=255, blank=True)
     description = models.CharField(max_length=200, blank=True)
 
@@ -184,6 +188,7 @@ class ClosePackage(KeelBaseModel):
     executive_summary = models.TextField(blank=True)
     pdf_export = models.FileField(
         upload_to='close_packages/%Y/%m/', blank=True,
+        validators=[FileSecurityValidator()],
     )
 
     # Distribution

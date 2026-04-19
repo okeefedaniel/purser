@@ -86,6 +86,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'keel.security.middleware.SecurityHeadersMiddleware',
+    'keel.security.middleware.AdminIPAllowlistMiddleware',
     'keel.security.middleware.FailedLoginMonitor',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -345,3 +346,17 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
+# --- Admin allowlist + trusted-proxy config (keel.security) ---
+# KEEL_ADMIN_ALLOWED_IPS: list of CIDR / IPs allowed to hit /admin/.
+#   Empty list = no-op (dev). Set via env on every Railway service in prod.
+# KEEL_TRUSTED_PROXY_COUNT: number of trusted proxies between the client and
+#   Django. Railway = 1. If 0, X-Forwarded-For is ignored (client spoof-safe).
+KEEL_ADMIN_ALLOWED_IPS = [
+    ip.strip() for ip in os.environ.get('KEEL_ADMIN_ALLOWED_IPS', '').split(',')
+    if ip.strip()
+]
+KEEL_TRUSTED_PROXY_COUNT = int(os.environ.get('KEEL_TRUSTED_PROXY_COUNT', '1'))
+
+# Content-Security-Policy (keel SecurityHeadersMiddleware)
+KEEL_CSP_POLICY = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'"
