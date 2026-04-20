@@ -18,5 +18,11 @@ print(f'  Site {\"created\" if created else \"updated\"}: {site.domain}')
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
+if [ "${DEMO_MODE,,}" = "true" ] || [ "$DEMO_MODE" = "1" ] || [ "${DEMO_MODE,,}" = "yes" ]; then
+    echo "Seeding demo users and domain data..."
+    python manage.py seed_keel_users || true
+    python manage.py seed_purser_demo || true
+fi
+
 echo "Starting Purser..."
 exec gunicorn purser_site.wsgi --bind 0.0.0.0:${PORT:-8080} --workers 2 --timeout 120
