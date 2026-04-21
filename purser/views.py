@@ -59,9 +59,12 @@ def _user_can_edit_program(user, program) -> bool:
 def dashboard(request):
     """Close dashboard — grid of programs x recent periods."""
     current_fy = FiscalYear.objects.filter(is_current=True).first()
-    periods = FiscalPeriod.objects.filter(
+    # Keep the queryset unsliced so downstream .filter() / .last() still work;
+    # materialize the top-4 list separately for grid rendering.
+    periods_qs = FiscalPeriod.objects.filter(
         fiscal_year=current_fy,
-    ).order_by('month')[:4] if current_fy else FiscalPeriod.objects.none()
+    ).order_by('month') if current_fy else FiscalPeriod.objects.none()
+    periods = list(periods_qs[:4])
 
     programs = Program.objects.filter(is_active=True).order_by('program_type', 'name')
 
@@ -76,9 +79,9 @@ def dashboard(request):
         grid.setdefault(sub.program_id, {})[sub.fiscal_period_id] = sub
 
     # Current period stats
-    current_period = periods.filter(
+    current_period = periods_qs.filter(
         status__in=['submissions_due', 'under_review'],
-    ).first() or (periods.last() if periods.exists() else None)
+    ).first() or (periods_qs.last() if periods_qs.exists() else None)
 
     stats = {}
     if current_period:
