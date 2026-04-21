@@ -14,38 +14,18 @@
 </div>
 
 {% if stats %}
-<div class="row mb-4">
+<div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h3>{{ stats.total_programs }}</h3>
-                <p class="text-muted mb-0">Programs</p>
-            </div>
-        </div>
+        {% include "keel/components/stat_card.html" with value=stats.total_programs label="Programs" icon="bi-folder" color="blue" url=stat_urls.programs_url %}
     </div>
     <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h3>{{ stats.submitted }}</h3>
-                <p class="text-muted mb-0">Submitted</p>
-            </div>
-        </div>
+        {% include "keel/components/stat_card.html" with value=stats.submitted label="Submitted" icon="bi-send-check" color="purple" url=stat_urls.submitted_url %}
     </div>
     <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h3>{{ stats.approved }}</h3>
-                <p class="text-muted mb-0">Approved</p>
-            </div>
-        </div>
+        {% include "keel/components/stat_card.html" with value=stats.approved label="Approved" icon="bi-check-circle" color="green" url=stat_urls.approved_url %}
     </div>
     <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h3>{{ stats.draft }}</h3>
-                <p class="text-muted mb-0">Draft / Pending</p>
-            </div>
-        </div>
+        {% include "keel/components/stat_card.html" with value=stats.draft label="Draft / Pending" icon="bi-pencil-square" color="gold" url=stat_urls.draft_url %}
     </div>
 </div>
 {% endif %}

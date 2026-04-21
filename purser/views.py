@@ -90,12 +90,23 @@ def dashboard(request):
             'draft': period_subs.filter(status='draft').count(),
         }
 
+    from django.urls import reverse
+    dashboard_url = reverse('purser:dashboard')
+    review_url = reverse('purser:review_queue')
+    program_url = reverse('purser:program_list')
+    stat_urls = {
+        'programs_url': program_url if stats.get('total_programs') else dashboard_url,
+        'submitted_url': review_url if stats.get('submitted') else dashboard_url,
+        'approved_url': dashboard_url,
+        'draft_url': dashboard_url,
+    }
     return render(request, 'purser/dashboard.html', {
         'programs': programs,
         'periods': periods,
         'grid': grid,
         'current_period': current_period,
         'stats': stats,
+        'stat_urls': stat_urls,
         'current_fy': current_fy,
     })
 
