@@ -24,7 +24,7 @@
                 <tr>
                     <td><strong>{{ sub.program.code }}</strong> — {{ sub.program.name }}</td>
                     <td>{{ sub.fiscal_period.label }}</td>
-                    <td><span class="badge bg-{{ sub.status|status_color }}">{{ sub.get_status_display }}</span></td>
+                    <td><span class="pill bg-{{ sub.status|status_color }}">{{ sub.get_status_display }}</span></td>
                     <td>{{ sub.submitted_by.get_full_name|default:"—" }}</td>
                     <td>{{ sub.submitted_at|date:"M j, Y g:i A"|default:"—" }}</td>
                     <td>

@@ -26,7 +26,7 @@
                     </td>
                     <td>{{ item.due_date|date:"F j, Y" }}</td>
                     <td>
-                        <span class="badge bg-{{ item.status|status_color }}">
+                        <span class="pill bg-{{ item.status|status_color }}">
                             {{ item.get_status_display }}
                         </span>
                     </td>

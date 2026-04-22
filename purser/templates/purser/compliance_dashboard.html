@@ -69,9 +69,9 @@
                     </td>
                     <td>
                         {% if item.escalation_sent %}
-                        <span class="badge bg-danger">Escalated</span>
+                        <span class="pill pill-error">Escalated</span>
                         {% else %}
-                        <span class="badge bg-secondary">No</span>
+                        <span class="pill pill-muted">No</span>
                         {% endif %}
                     </td>
                     <td>
@@ -106,7 +106,7 @@
                     <td>{{ item.label }}</td>
                     <td>{{ item.obligation.template.get_requirement_type_display }}</td>
                     <td>{{ item.due_date|date:"M j, Y" }}</td>
-                    <td><span class="badge bg-{{ item.status|status_color }}">{{ item.get_status_display }}</span></td>
+                    <td><span class="pill bg-{{ item.status|status_color }}">{{ item.get_status_display }}</span></td>
                     <td>
                         <a href="{% url 'purser:compliance_detail' item.pk %}" class="btn btn-sm btn-outline-primary">View</a>
                     </td>

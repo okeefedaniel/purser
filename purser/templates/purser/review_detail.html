@@ -20,7 +20,7 @@
             on {{ submission.submitted_at|date:"M j, Y g:i A"|default:"N/A" }}
         </p>
     </div>
-    <span class="badge bg-{{ submission.status|status_color }} fs-6">
+    <span class="pill bg-{{ submission.status|status_color }}">
         {{ submission.get_status_display }}
     </span>
 </div>
