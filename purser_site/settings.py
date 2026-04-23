@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'keel.periods',
     'keel.reporting',
     'keel.compliance',
+    'keel.signatures',
     # Third party
     'rest_framework',
     'crispy_forms',
@@ -232,6 +233,13 @@ KEEL_NOTIFICATION_LOG_MODEL = 'purser_core.NotificationLog'
 KEEL_API_KEY = os.environ.get('KEEL_API_KEY', '')
 HELM_FEED_API_KEY = os.environ.get('HELM_FEED_API_KEY', '')
 KEEL_API_URL = os.environ.get('KEEL_API_URL', 'https://keel.docklabs.ai')
+
+# Manifest cross-product signing handoff — closeout signing flows.
+# Optional — when unset, keel.signatures.client.is_available() returns
+# False and the UI falls back to local-sign.
+MANIFEST_URL = os.environ.get('MANIFEST_URL', '')
+MANIFEST_API_TOKEN = os.environ.get('MANIFEST_API_TOKEN', '')
+MANIFEST_WEBHOOK_SECRET = os.environ.get('MANIFEST_WEBHOOK_SECRET', '')
 
 # ---------------------------------------------------------------------------
 # DRF

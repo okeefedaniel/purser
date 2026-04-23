@@ -9,3 +9,4 @@ class PurserConfig(AppConfig):
 
     def ready(self):
         from . import notifications  # noqa: F401 — registers notification types
+        from . import signals  # noqa: F401 — packet_approved receiver

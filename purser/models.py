@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from keel.core.models import KeelBaseModel, AbstractStatusHistory
+from keel.core.models import AbstractAttachment, AbstractStatusHistory, KeelBaseModel
 from keel.security.scanning import FileSecurityValidator
 
 
@@ -203,6 +203,24 @@ class ClosePackage(KeelBaseModel):
 
     def __str__(self):
         return f"Close Package — {self.fiscal_period.label}"
+
+
+class ClosePackageAttachment(AbstractAttachment):
+    """Files attached to a close package.
+
+    Destination for signed PDFs returning from the Manifest roundtrip
+    (source=MANIFEST_SIGNED, manifest_packet_uuid filled in).
+    Distinct from ClosePackage.pdf_export, which holds the pre-signing
+    PDF generated during close.
+    """
+
+    close_package = models.ForeignKey(
+        ClosePackage, on_delete=models.CASCADE, related_name='attachments',
+    )
+
+    class Meta(AbstractAttachment.Meta):
+        verbose_name = 'Close Package Attachment'
+        verbose_name_plural = 'Close Package Attachments'
 
 
 class BudgetBaseline(KeelBaseModel):

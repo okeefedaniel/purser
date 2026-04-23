@@ -49,6 +49,7 @@ urlpatterns = [
     # Keel accounts
     path('search/', search_view, name='search'),
     path('keel/', include('keel.accounts.urls')),
+    path('keel/signatures/', include('keel.signatures.urls')),
     path('notifications/', include('keel.notifications.urls')),
 
     # Allauth (SSO + remaining account URLs)
