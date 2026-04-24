@@ -70,11 +70,32 @@
                     <i class="bi bi-file-pdf"></i> Download PDF
                 </a>
                 {% endif %}
-                {% if package.status == 'complete' %}
-                <button class="btn btn-primary" disabled>
-                    <i class="bi bi-pen"></i> Send to Manifest for Signing
+
+                {# Signing actions — enabled once the close package has a
+                   generated PDF and is not already signed/published. #}
+                {% if package.pdf_export and package.status == 'complete' %}
+                    {% if manifest_available %}
+                    <form method="post" action="{% url 'purser:close_package_sign_send' period.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-send"></i> Send to Manifest for Signing
+                        </button>
+                    </form>
+                    <a href="{% url 'purser:close_package_sign_local' period.pk %}" class="btn btn-outline-primary">
+                        <i class="bi bi-upload"></i> Upload Signed PDF
+                    </a>
+                    {% else %}
+                    <a href="{% url 'purser:close_package_sign_local' period.pk %}" class="btn btn-primary">
+                        <i class="bi bi-upload"></i> Upload Signed PDF
+                    </a>
+                    <small class="text-muted">Manifest not configured.</small>
+                    {% endif %}
+                {% elif package.status == 'signing' %}
+                <button class="btn btn-secondary" disabled>
+                    <i class="bi bi-hourglass-split"></i> Awaiting Signatures
                 </button>
                 {% endif %}
+
                 {% if package.status == 'signed' %}
                 <button class="btn btn-success" disabled>
                     <i class="bi bi-send"></i> Publish to Leadership
@@ -83,14 +104,61 @@
             </div>
         </div>
 
-        {% if package.manifest_signing_id %}
+        {% if latest_handoff %}
+        <div class="card mb-3">
+            <div class="card-header"><strong>Last Signing Handoff</strong></div>
+            <ul class="list-group list-group-flush small">
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Status</span>
+                    {% if latest_handoff.status == 'signed' or latest_handoff.status == 'local_signed' %}
+                        <span class="pill pill-success">Signed</span>
+                    {% elif latest_handoff.status == 'sent' %}
+                        <span class="pill pill-navy">Awaiting signatures</span>
+                    {% elif latest_handoff.status == 'failed' %}
+                        <span class="pill pill-error">Failed</span>
+                    {% else %}
+                        <span class="pill pill-muted">{{ latest_handoff.get_status_display }}</span>
+                    {% endif %}
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Sent</span>
+                    <span>{{ latest_handoff.created_at|date:"M d, Y g:i A" }}</span>
+                </li>
+                {% if latest_handoff.signed_at %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Signed</span>
+                    <span>{{ latest_handoff.signed_at|date:"M d, Y g:i A" }}</span>
+                </li>
+                {% endif %}
+                {% if latest_handoff.manifest_url %}
+                <li class="list-group-item">
+                    <a href="{{ latest_handoff.manifest_url }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm w-100">
+                        <i class="bi bi-box-arrow-up-right"></i> View in Manifest
+                    </a>
+                </li>
+                {% endif %}
+                {% if latest_handoff.error_message %}
+                <li class="list-group-item">
+                    <div class="alert alert-warning small mb-0">{{ latest_handoff.error_message }}</div>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if signed_attachments %}
         <div class="card">
-            <div class="card-header"><strong>Signing Status</strong></div>
-            <div class="card-body">
-                <p class="mb-0">
-                    Manifest Session: <code>{{ package.manifest_signing_id|truncatechars:12 }}</code>
-                </p>
-            </div>
+            <div class="card-header"><strong>Signed Documents</strong></div>
+            <ul class="list-group list-group-flush small">
+                {% for att in signed_attachments %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <a href="{{ att.file.url }}" target="_blank" rel="noopener">
+                        <i class="bi bi-file-earmark-pdf"></i> {{ att.filename }}
+                    </a>
+                    <span class="pill pill-success">Signed</span>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
         {% endif %}
     </div>

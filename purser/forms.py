@@ -42,3 +42,19 @@ class SubmissionAttachmentForm(forms.ModelForm):
             'file': forms.FileInput(attrs={'class': 'form-control form-control-sm'}),
             'description': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
+
+
+class CloseLocalSignForm(forms.Form):
+    """Upload a locally-signed close package when Manifest isn't deployed."""
+
+    signed_pdf = forms.FileField(
+        label='Signed close package PDF',
+        help_text='Upload the signed close package.',
+        widget=forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': '.pdf'}),
+    )
+
+    def clean_signed_pdf(self):
+        f = self.cleaned_data['signed_pdf']
+        if not f.name.lower().endswith('.pdf'):
+            raise forms.ValidationError('Only PDF files are accepted.')
+        return f

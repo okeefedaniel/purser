@@ -29,6 +29,16 @@ urlpatterns = [
 
     # Close Package
     path('close/<uuid:period_id>/', views.close_package, name='close_package'),
+    path(
+        'close/<uuid:period_id>/sign/send/',
+        views.close_package_sign_send,
+        name='close_package_sign_send',
+    ),
+    path(
+        'close/<uuid:period_id>/sign/local/',
+        views.close_package_sign_local,
+        name='close_package_sign_local',
+    ),
 
     # Program Admin
     path('admin/programs/', views.program_list, name='program_list'),

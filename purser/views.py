@@ -1,6 +1,7 @@
 """Purser views — financial close, submissions, compliance, portal."""
 from decimal import Decimal
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Count, Q
@@ -12,12 +13,14 @@ from django.views.decorators.http import require_POST
 from keel.compliance.models import ComplianceItem, ComplianceObligation
 from keel.periods.models import FiscalPeriod, FiscalYear
 from keel.reporting.models import ReportLineItem
+from keel.signatures.models import ManifestHandoff
 
-from .forms import ProgramForm, SubmissionLineValueForm
+from .forms import CloseLocalSignForm, ProgramForm, SubmissionLineValueForm
 from .models import (
     BudgetBaseline, ClosePackage, Program, Submission,
     SubmissionAttachment, SubmissionLineValue,
 )
+from .services import manifest_signing
 from .workflows import SUBMISSION_WORKFLOW
 
 
@@ -385,10 +388,104 @@ def close_package(request, period_id):
         fiscal_period=period,
     ).select_related('program')
 
+    # Signing context — show Send-to-Manifest / Upload-signed buttons and
+    # the last handoff's state (if any) on the close-package detail page.
+    latest_handoff = ManifestHandoff.objects.filter(
+        source_app_label='purser',
+        source_model='closepackage',
+        source_pk=str(package.pk),
+    ).first()
+
     return render(request, 'purser/close_package.html', {
         'period': period,
         'package': package,
         'submissions': submissions,
+        'manifest_available': manifest_signing.is_available(),
+        'latest_handoff': latest_handoff,
+        'signed_attachments': package.attachments.filter(
+            source='manifest_signed',
+        ).order_by('-uploaded_at'),
+    })
+
+
+@login_required
+@require_POST
+def close_package_sign_send(request, period_id):
+    """Send the close package through Manifest for signing."""
+    period = get_object_or_404(FiscalPeriod, pk=period_id)
+    package = get_object_or_404(ClosePackage, fiscal_period=period)
+
+    if not package.pdf_export:
+        messages.error(
+            request,
+            'Generate the close package PDF before sending for signing.',
+        )
+        return redirect('purser:close_package', period_id=period.pk)
+
+    if not manifest_signing.is_available():
+        messages.error(
+            request,
+            'Manifest is not configured. Use "Upload signed close package" instead.',
+        )
+        return redirect('purser:close_package', period_id=period.pk)
+
+    display_name = request.user.get_full_name() or request.user.username
+    handoff = manifest_signing.send_to_manifest(
+        close_package=package,
+        request=request,
+        signers=[{'email': request.user.email, 'name': display_name}],
+        created_by=request.user,
+    )
+
+    if handoff.status == ManifestHandoff.Status.SENT:
+        messages.success(
+            request,
+            'Close package sent to Manifest for signing. '
+            'The status will advance to Signed on completion.',
+        )
+    else:
+        messages.error(
+            request,
+            f'Could not reach Manifest: '
+            f'{handoff.error_message or handoff.get_status_display()}. '
+            'The attempt is logged.',
+        )
+    return redirect('purser:close_package', period_id=period.pk)
+
+
+@login_required
+def close_package_sign_local(request, period_id):
+    """Upload a locally-signed close package when Manifest isn't deployed."""
+    period = get_object_or_404(FiscalPeriod, pk=period_id)
+    package = get_object_or_404(ClosePackage, fiscal_period=period)
+
+    if not package.pdf_export:
+        messages.error(
+            request,
+            'Generate the close package PDF before uploading a signed version.',
+        )
+        return redirect('purser:close_package', period_id=period.pk)
+
+    if request.method == 'POST':
+        form = CloseLocalSignForm(request.POST, request.FILES)
+        if form.is_valid():
+            manifest_signing.local_sign(
+                close_package=package,
+                signed_pdf=form.cleaned_data['signed_pdf'],
+                created_by=request.user,
+            )
+            messages.success(
+                request,
+                'Signed close package recorded. Status moved to Signed.',
+            )
+            return redirect('purser:close_package', period_id=period.pk)
+    else:
+        form = CloseLocalSignForm()
+
+    return render(request, 'purser/close_package_local_sign.html', {
+        'period': period,
+        'package': package,
+        'form': form,
     })
 
 
