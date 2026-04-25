@@ -38,3 +38,6 @@ logs/
 tmp.db
 dev.sqlite3
 dev.sqlite3-journal
+
+# Claude Code runtime state
+.claude/*.lock
