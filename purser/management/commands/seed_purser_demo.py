@@ -1,10 +1,12 @@
 """Seed demo fiscal year + programs for Purser dashboard demos.
 
 Creates a current FiscalYear, its 12 FiscalPeriods, a minimal
-ReportSchema, and a few Programs so the purser dashboard renders
-non-zero numbers. Idempotent.
+ReportSchema, a few Programs, and demo Submission/ClosePackage
+rows so the Close Dashboard grid renders varied statuses instead
+of all "Not Started". Idempotent.
 """
 from datetime import date
+from django.utils import timezone
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -12,7 +14,7 @@ from django.core.management.base import BaseCommand
 from keel.periods.models import FiscalYear, FiscalPeriod
 from keel.reporting.models import ReportSchema
 
-from purser.models import Program
+from purser.models import ClosePackage, Program, Submission
 
 
 MONTH_LABELS = [
@@ -98,4 +100,80 @@ class Command(BaseCommand):
             )
             self.stdout.write(self.style.SUCCESS(f'  Program: {code} — {name}'))
 
+        self._seed_closeout_demo(fiscal_year, today)
+
         self.stdout.write(self.style.SUCCESS('Purser demo seed complete.'))
+
+    def _seed_closeout_demo(self, fiscal_year, today):
+        """Populate Submissions + ClosePackages for past periods.
+
+        Cycles statuses across (program × period) so the Close Dashboard
+        grid renders varied "Submitted / Approved / Closed / Draft"
+        cells instead of an empty "Not Started" wall.
+        """
+        # Status cycle — mirrors the spread a real agency would have
+        # mid-fiscal-year (most months approved, current month in flight).
+        STATUS_CYCLE = [
+            Submission.Status.APPROVED,
+            Submission.Status.APPROVED,
+            Submission.Status.SUBMITTED,
+            Submission.Status.UNDER_REVIEW,
+            Submission.Status.DRAFT,
+        ]
+
+        past_periods = list(
+            FiscalPeriod.objects
+            .filter(fiscal_year=fiscal_year, end_date__lte=today)
+            .order_by('start_date')
+        )
+        if not past_periods:
+            self.stdout.write(self.style.WARNING(
+                '  No past fiscal periods yet — skipping Submission seed.'
+            ))
+            return
+
+        programs = list(Program.objects.filter(code__in=[c for c, _, _ in PROGRAMS]))
+        now = timezone.now()
+        created_subs = 0
+        for prog_idx, program in enumerate(programs):
+            for per_idx, period in enumerate(past_periods):
+                status = STATUS_CYCLE[(prog_idx + per_idx) % len(STATUS_CYCLE)]
+                _, was_created = Submission.objects.get_or_create(
+                    program=program,
+                    fiscal_period=period,
+                    defaults={
+                        'status': status,
+                        'source': Submission.Source.MANUAL,
+                        'submitted_at': now if status != Submission.Status.DRAFT else None,
+                        'reviewed_at': (
+                            now if status in (
+                                Submission.Status.APPROVED,
+                                Submission.Status.UNDER_REVIEW,
+                            ) else None
+                        ),
+                    },
+                )
+                if was_created:
+                    created_subs += 1
+
+        # ClosePackage for the two earliest past periods (one Signed,
+        # one Complete) to demonstrate the close flow downstream of
+        # approved submissions.
+        package_targets = [
+            (past_periods[0], ClosePackage.Status.SIGNED),
+        ]
+        if len(past_periods) > 1:
+            package_targets.append((past_periods[1], ClosePackage.Status.COMPLETE))
+
+        created_pkgs = 0
+        for period, pkg_status in package_targets:
+            _, was_created = ClosePackage.objects.get_or_create(
+                fiscal_period=period,
+                defaults={'status': pkg_status},
+            )
+            if was_created:
+                created_pkgs += 1
+
+        self.stdout.write(self.style.SUCCESS(
+            f'  Closeout seed: {created_subs} submissions, {created_pkgs} close packages'
+        ))
