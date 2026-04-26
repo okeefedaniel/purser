@@ -10,6 +10,7 @@ from keel.core.search_views import search_view
 
 from core.forms import LoginForm
 from purser.helm_feed import purser_helm_feed
+from purser.helm_inbox import purser_helm_feed_inbox
 from purser.views import dashboard as purser_dashboard
 
 urlpatterns = [
@@ -43,6 +44,7 @@ urlpatterns = [
 
     # Helm executive dashboard feed
     path('api/v1/helm-feed/', purser_helm_feed, name='helm-feed'),
+    path('api/v1/helm-feed/inbox/', purser_helm_feed_inbox, name='helm-feed-inbox'),
     # Purser app
     path('purser/', include('purser.urls')),
 
