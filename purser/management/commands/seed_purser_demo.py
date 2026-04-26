@@ -5,11 +5,12 @@ ReportSchema, a few Programs, and demo Submission/ClosePackage
 rows so the Close Dashboard grid renders varied statuses instead
 of all "Not Started". Idempotent.
 """
+import os
 from datetime import date
 from django.utils import timezone
 
 from django.conf import settings
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 from keel.periods.models import FiscalYear, FiscalPeriod
 from keel.reporting.models import ReportSchema
@@ -33,15 +34,22 @@ PROGRAMS = [
 class Command(BaseCommand):
     help = 'Seed demo fiscal year, periods, report schema, and programs for Purser.'
 
-    def add_arguments(self, parser):
-        parser.add_argument('--force', action='store_true')
-
     def handle(self, *args, **options):
-        if not getattr(settings, 'DEMO_MODE', False) and not options['force']:
+        if not getattr(settings, 'DEMO_MODE', False):
             self.stdout.write(self.style.WARNING(
-                'DEMO_MODE is not enabled. Use --force to override.'
+                'DEMO_MODE is not enabled. Skipping seed.'
             ))
             return
+
+        # Belt-and-suspenders against DEMO_MODE leaking onto a production
+        # Railway service: refuse to seed if the public domain doesn't
+        # look like a demo host. Empty domain = local dev = allowed.
+        railway_domain = os.environ.get('RAILWAY_PUBLIC_DOMAIN', '').lower()
+        if railway_domain and not railway_domain.startswith('demo-'):
+            raise CommandError(
+                f'Refusing to seed: RAILWAY_PUBLIC_DOMAIN={railway_domain!r} '
+                f'is not a demo host. Unset DEMO_MODE on this service.'
+            )
 
         today = date.today()
         fy_start_year = today.year if today.month >= 7 else today.year - 1
