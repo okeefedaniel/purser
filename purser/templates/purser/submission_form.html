@@ -6,7 +6,7 @@
 {% block content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'purser:dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'dashboard_alias' %}">Dashboard</a></li>
         <li class="breadcrumb-item active">{{ program.code }} — {{ period.label }}</li>
     </ol>
 </nav>

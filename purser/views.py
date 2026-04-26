@@ -97,7 +97,7 @@ def dashboard(request):
         }
 
     from django.urls import reverse
-    dashboard_url = reverse('purser:dashboard')
+    dashboard_url = reverse('dashboard_alias')
     review_url = reverse('purser:review_queue')
     program_url = reverse('purser:program_list')
     stat_urls = {

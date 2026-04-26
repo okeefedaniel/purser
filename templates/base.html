@@ -14,12 +14,12 @@
 
 {% block sidebar_brand_icon %}bi-calculator{% endblock %}
 {% block sidebar_brand_name %}Purser{% endblock %}
-{% block sidebar_brand_href %}{% if user.is_authenticated %}{% url 'purser:dashboard' %}{% else %}/{% endif %}{% endblock %}
+{% block sidebar_brand_href %}{% if user.is_authenticated %}{% url 'dashboard_alias' %}{% else %}/{% endif %}{% endblock %}
 
 {% block sidebar_favorites %}
 <div class="sb-section">
   <div class="sb-section-label">Favorites</div>
-  <a class="sb-item{% if request.resolver_match.url_name == 'dashboard' %} active{% endif %}" href="{% url 'purser:dashboard' %}">
+  <a class="sb-item{% if request.resolver_match.url_name == 'dashboard_alias' %} active{% endif %}" href="{% url 'dashboard_alias' %}">
     <span class="sb-icon"><i class="bi bi-grid-3x3-gap"></i></span>
     <span class="sb-item-label">Close Dashboard</span>
   </a>
@@ -30,7 +30,7 @@
 <div class="sb-section">
   <div class="sb-section-label">Financial Close</div>
 
-  <a class="sb-item{% if request.resolver_match.url_name == 'dashboard' %} active{% endif %}" href="{% url 'purser:dashboard' %}">
+  <a class="sb-item{% if request.resolver_match.url_name == 'dashboard_alias' %} active{% endif %}" href="{% url 'dashboard_alias' %}">
     <span class="sb-toggle" style="visibility:hidden">&rsaquo;</span>
     <span class="sb-icon"><i class="bi bi-grid-3x3-gap"></i></span>
     <span class="sb-item-label">Close Dashboard</span>

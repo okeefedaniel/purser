@@ -7,7 +7,7 @@
   <div class="col-lg-7">
     <nav aria-label="breadcrumb" class="mb-3">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'purser:dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'dashboard_alias' %}">Dashboard</a></li>
         <li class="breadcrumb-item"><a href="{% url 'purser:close_package' period.pk %}">Close Package — {{ period.label }}</a></li>
         <li class="breadcrumb-item active">Upload Signed</li>
       </ol>
