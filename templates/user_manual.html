@@ -1,0 +1,660 @@
+{% extends "base.html" %}
+
+{% block page_title %}User Manual{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+    .manual-nav {
+        position: sticky;
+        top: 80px;
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+    }
+    .manual-nav .nav-link {
+        color: var(--text-secondary, #4a5568);
+        padding: 0.35rem 0.75rem;
+        font-size: 0.875rem;
+        border-left: 3px solid transparent;
+        border-radius: 0;
+    }
+    .manual-nav .nav-link:hover,
+    .manual-nav .nav-link.active {
+        color: var(--ct-blue, #1565c0);
+        border-left-color: var(--ct-blue, #1565c0);
+        background-color: rgba(21, 101, 192, 0.06);
+    }
+    .manual-section {
+        scroll-margin-top: 90px;
+    }
+    .manual-section h2 {
+        border-bottom: 2px solid #cfd8dc;
+        padding-bottom: 0.5rem;
+    }
+    .manual-section h3 {
+        color: #1565c0;
+    }
+    .role-pill {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+    }
+    .role-admin       { background-color: #263238; color: #ffffff; }
+    .role-officer     { background-color: #e3f2fd; color: #1565c0; }
+    .role-submitter   { background-color: #e8f5e9; color: #2e7d32; }
+    .role-reviewer    { background-color: #ede7f6; color: #4527a0; }
+    .role-compliance  { background-color: #fff3e0; color: #e65100; }
+    .role-readonly    { background-color: #eceff1; color: #455a64; }
+    .role-external    { background-color: #fce4ec; color: #ad1457; }
+    .workflow-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 0.75rem 0;
+    }
+    .workflow-step .step-num {
+        flex-shrink: 0;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        background-color: #1565c0;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+    }
+    .status-flow {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .status-flow .badge {
+        font-size: 0.8125rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+<div class="row">
+    <!-- Sidebar nav (desktop) -->
+    <div class="col-lg-3 d-none d-lg-block">
+        <nav class="manual-nav" aria-label="Manual sections">
+            <h6 class="fw-bold text-uppercase text-muted small mb-3 px-2">Contents</h6>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="#overview"><i class="bi bi-house me-2"></i>Overview</a></li>
+                <li class="nav-item"><a class="nav-link" href="#roles"><i class="bi bi-shield-lock me-2"></i>Roles</a></li>
+                <li class="nav-item"><a class="nav-link" href="#getting-started"><i class="bi bi-rocket-takeoff me-2"></i>Getting Started</a></li>
+                <li class="nav-item"><a class="nav-link" href="#dashboard"><i class="bi bi-grid-3x3-gap me-2"></i>Close Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="#programs"><i class="bi bi-folder me-2"></i>Programs</a></li>
+                <li class="nav-item"><a class="nav-link" href="#submissions"><i class="bi bi-pencil-square me-2"></i>Submissions</a></li>
+                <li class="nav-item"><a class="nav-link" href="#review"><i class="bi bi-clipboard-check me-2"></i>Review Queue</a></li>
+                <li class="nav-item"><a class="nav-link" href="#close"><i class="bi bi-box-seam me-2"></i>Close Packages</a></li>
+                <li class="nav-item"><a class="nav-link" href="#compliance"><i class="bi bi-shield-check me-2"></i>Compliance</a></li>
+                <li class="nav-item"><a class="nav-link" href="#portal"><i class="bi bi-building me-2"></i>External Portal</a></li>
+                <li class="nav-item"><a class="nav-link" href="#helm"><i class="bi bi-inbox me-2"></i>Helm Integration</a></li>
+                <li class="nav-item"><a class="nav-link" href="#notifications"><i class="bi bi-bell me-2"></i>Notifications</a></li>
+                <li class="nav-item"><a class="nav-link" href="#manifest"><i class="bi bi-pen me-2"></i>Manifest Signing</a></li>
+                <li class="nav-item"><a class="nav-link" href="#statuses"><i class="bi bi-diagram-3 me-2"></i>Status Reference</a></li>
+                <li class="nav-item"><a class="nav-link" href="#shortcuts"><i class="bi bi-keyboard me-2"></i>Keyboard Shortcuts</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main content -->
+    <div class="col-lg-9">
+
+        <!-- Mobile TOC -->
+        <div class="d-lg-none mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <button class="btn btn-outline-primary btn-sm w-100" type="button" data-bs-toggle="collapse" data-bs-target="#mobileToc">
+                        <i class="bi bi-list me-2"></i>Table of Contents
+                    </button>
+                    <div class="collapse mt-3" id="mobileToc">
+                        <div class="list-group list-group-flush">
+                            <a href="#overview" class="list-group-item list-group-item-action small">Overview</a>
+                            <a href="#roles" class="list-group-item list-group-item-action small">Roles</a>
+                            <a href="#getting-started" class="list-group-item list-group-item-action small">Getting Started</a>
+                            <a href="#dashboard" class="list-group-item list-group-item-action small">Close Dashboard</a>
+                            <a href="#programs" class="list-group-item list-group-item-action small">Programs</a>
+                            <a href="#submissions" class="list-group-item list-group-item-action small">Submissions</a>
+                            <a href="#review" class="list-group-item list-group-item-action small">Review Queue</a>
+                            <a href="#close" class="list-group-item list-group-item-action small">Close Packages</a>
+                            <a href="#compliance" class="list-group-item list-group-item-action small">Compliance</a>
+                            <a href="#portal" class="list-group-item list-group-item-action small">External Portal</a>
+                            <a href="#helm" class="list-group-item list-group-item-action small">Helm Integration</a>
+                            <a href="#notifications" class="list-group-item list-group-item-action small">Notifications</a>
+                            <a href="#manifest" class="list-group-item list-group-item-action small">Manifest Signing</a>
+                            <a href="#statuses" class="list-group-item list-group-item-action small">Status Reference</a>
+                            <a href="#shortcuts" class="list-group-item list-group-item-action small">Keyboard Shortcuts</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold mb-1">Purser User Manual</h1>
+                <p class="text-muted mb-0">Comprehensive guide to financial close, submission review, and compliance tracking.</p>
+            </div>
+            <a href="{% url 'help' %}" class="btn btn-outline-primary btn-sm" title="Open the FAQ">
+                <i class="bi bi-question-circle me-1"></i> FAQ
+            </a>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- OVERVIEW -->
+        <!-- ============================================================== -->
+        <section id="overview" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-house me-2 text-primary"></i>Overview</h2>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4 lh-lg">
+                    <p>Purser is the DockLabs financial-close, submission-review, and compliance product. State agencies and the programs they run use Purser to file periodic financial reports, route them through review and approval, and roll the approved results into a signable close package.</p>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start gap-2">
+                                <i class="bi bi-grid-3x3-gap text-primary fs-5 mt-1"></i>
+                                <div>
+                                    <strong>Close Dashboard</strong>
+                                    <p class="small text-muted mb-0">Program × period grid for the active fiscal year, with current-period KPIs.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start gap-2">
+                                <i class="bi bi-clipboard-check text-primary fs-5 mt-1"></i>
+                                <div>
+                                    <strong>Review Queue</strong>
+                                    <p class="small text-muted mb-0">Every submission awaiting reviewer action, oldest-first.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start gap-2">
+                                <i class="bi bi-shield-check text-primary fs-5 mt-1"></i>
+                                <div>
+                                    <strong>Compliance</strong>
+                                    <p class="small text-muted mb-0">Obligations and items per recipient, with internal triage and an external submitter portal.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start gap-2">
+                                <i class="bi bi-pen text-primary fs-5 mt-1"></i>
+                                <div>
+                                    <strong>Close-package signing</strong>
+                                    <p class="small text-muted mb-0">Manifest handoff with a local upload-signed-PDF fallback.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- ROLES -->
+        <!-- ============================================================== -->
+        <section id="roles" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-shield-lock me-2 text-primary"></i>Roles</h2>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <p>Purser-specific roles are issued via Keel SSO and surfaced in your sidebar profile.</p>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr><th>Role</th><th>Capability</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="role-pill role-admin">Admin</span></td>
+                                    <td>Full access. Manage programs, run any transition, close periods, send to Manifest, waive compliance items.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="role-pill role-officer">Program Officer</span></td>
+                                    <td>Operate programs day-to-day inside the agency. Manage rosters and review their assigned programs.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="role-pill role-submitter">Submitter</span></td>
+                                    <td>File monthly submissions for rostered programs. Edit line values, attach documents.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="role-pill role-reviewer">Reviewer</span></td>
+                                    <td>Review submissions for rostered programs. Begin review, approve, or request revisions.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="role-pill role-compliance">Compliance Officer</span></td>
+                                    <td>Triage compliance items submitted by external recipients. Accept, reject, escalate.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="role-pill role-readonly">Read-Only</span></td>
+                                    <td>View dashboards and signed close packages. No edit.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="role-pill role-external">External Submitter</span></td>
+                                    <td>Grant recipients filing compliance documents from outside the agency. Restricted to their own agency's items.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="small text-muted mt-3 mb-0">Suite-level <code>system_admin</code> inherits Admin behavior on Purser. Program rostering is enforced separately — even with the right role, a user can only edit submissions for the specific programs they're listed on as a submitter or reviewer.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- GETTING STARTED -->
+        <!-- ============================================================== -->
+        <section id="getting-started" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-rocket-takeoff me-2 text-primary"></i>Getting Started</h2>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-4 lh-lg">
+                    <h5 class="fw-bold"><i class="bi bi-box-arrow-in-right me-2 text-primary"></i>Signing in</h5>
+                    <div class="workflow-step">
+                        <span class="step-num">1</span>
+                        <span>From any DockLabs product, click <strong>Purser</strong> in the fleet switcher, or visit <code>https://purser.docklabs.ai/</code>.</span>
+                    </div>
+                    <div class="workflow-step">
+                        <span class="step-num">2</span>
+                        <span>Click <strong>Sign in with DockLabs</strong> (the suite OIDC button).</span>
+                    </div>
+                    <div class="workflow-step">
+                        <span class="step-num">3</span>
+                        <span>You'll land on <code>/dashboard/</code> (the Close Dashboard).</span>
+                    </div>
+                    <div class="alert alert-info border-0 small mt-3 mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        If you're already signed in to another DockLabs product, the redirect is seamless — no second login form.
+                    </div>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 lh-lg">
+                    <h5 class="fw-bold"><i class="bi bi-eye me-2 text-primary"></i>What you'll see first</h5>
+                    <ul class="mb-0">
+                        <li><strong>Close Dashboard</strong> — the program × period grid, plus current-period KPIs.</li>
+                        <li><strong>Review Queue</strong> (sidebar) — submissions awaiting review.</li>
+                        <li><strong>Compliance</strong> (sidebar) — overdue and upcoming compliance items.</li>
+                        <li><strong>Programs</strong> (sidebar) — admin surface for program configuration.</li>
+                    </ul>
+                    <p class="small text-muted mt-2 mb-0">External submitters land on the <a href="#portal">External Submitter Portal</a> instead, scoped to their own agency.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CLOSE DASHBOARD -->
+        <!-- ============================================================== -->
+        <section id="dashboard" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-grid-3x3-gap me-2 text-primary"></i>Close Dashboard</h2>
+            <p><code>/dashboard/</code> — the executive view of the current fiscal year close.</p>
+            <ul>
+                <li><strong>KPI strip</strong> — for the current open period: total programs, submitted count, approved count, draft count. Each card links through to the natural follow-up surface.</li>
+                <li><strong>Program × period grid</strong> — rows are active programs grouped by program type (Grant, Loan, Tax Credit, Bond, Federal Pass-Through, Other), columns are the most recent four fiscal periods of the active fiscal year. Each cell shows the submission's status badge and links into the submission form.</li>
+            </ul>
+            <p class="small text-muted">The dashboard is read-only at the cell level — to act on a submission, click into it.</p>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- PROGRAMS -->
+        <!-- ============================================================== -->
+        <section id="programs" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-folder me-2 text-primary"></i>Programs</h2>
+            <p><code>/purser/admin/programs/</code> — the program-admin surface.</p>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr><th>Field</th><th>Meaning</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Name</strong></td><td>"Manufacturing Assistance Act"</td></tr>
+                                <tr><td><strong>Code</strong></td><td>Short unique code (<code>MAA</code>). Used in URLs.</td></tr>
+                                <tr><td><strong>Program type</strong></td><td>Grant, Loan, Tax Credit, Bond, Federal Pass-Through, Other.</td></tr>
+                                <tr><td><strong>Report schema</strong></td><td><code>keel.reporting.ReportSchema</code> — the chart of accounts the program reports against each period.</td></tr>
+                                <tr><td><strong>Submitters</strong></td><td>M2M set of users who can file the program's monthly submission.</td></tr>
+                                <tr><td><strong>Reviewers</strong></td><td>M2M set of users who can review and approve. Drives Helm's "Awaiting Me" inbox for those reviewers.</td></tr>
+                                <tr><td><strong>Is active</strong></td><td>Toggle off to retire without deleting. Inactive programs disappear from the dashboard grid.</td></tr>
+                                <tr><td><strong>Pulls from Harbor</strong></td><td>When set, submissions can be auto-populated from Harbor instead of typed.</td></tr>
+                                <tr><td><strong>Harbor API endpoint</strong></td><td>URL the auto-pull hits. Optional.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="fw-bold mt-4">Creating or editing a program</h3>
+            <div class="workflow-step"><span class="step-num">1</span><span>Click <strong>Programs → New program</strong> (or click an existing program to edit).</span></div>
+            <div class="workflow-step"><span class="step-num">2</span><span>Fill in name, code, type, and report schema.</span></div>
+            <div class="workflow-step"><span class="step-num">3</span><span>Pick the submitters and reviewers from the user list. Both are M2M — a user can be on as many programs as you need.</span></div>
+            <div class="workflow-step"><span class="step-num">4</span><span>Optionally enable Harbor auto-pull.</span></div>
+            <div class="workflow-step"><span class="step-num">5</span><span>Save.</span></div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- SUBMISSIONS -->
+        <!-- ============================================================== -->
+        <section id="submissions" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-pencil-square me-2 text-primary"></i>Submissions</h2>
+            <p>A <strong>submission</strong> is one program team's monthly financial report for a single fiscal period.</p>
+            <p><code>/purser/submit/&lt;program_code&gt;/&lt;period_id&gt;/</code> — the submission form.</p>
+
+            <h3 class="fw-bold mt-4">Filling in the form</h3>
+            <p>The form renders the program's <code>ReportSchema</code> line items grouped and ordered by sort order. For each line, you can enter a numeric value, a text value (for narrative items), or a per-line note explaining variance.</p>
+            <p>The form persists changes inline via htmx — typing in a cell saves on blur, no full-page submit needed. Only <strong>draft</strong> and <strong>revision_requested</strong> submissions are editable; once the submission moves to <code>submitted</code> or beyond, the cells lock.</p>
+            <p>For context the form also surfaces:</p>
+            <ul>
+                <li><strong>Prior period values</strong> — last month's value next to this month's cell.</li>
+                <li><strong>Budget baseline</strong> — the monthly slice of the program's annual budget for the same line item, when a <code>BudgetBaseline</code> exists for the fiscal year.</li>
+            </ul>
+
+            <h3 class="fw-bold mt-4">Attachments</h3>
+            <p>Each submission can carry supporting documents (a <code>SubmissionAttachment</code> per file) — invoices, journal exports, signed narratives, anything a reviewer might ask for. Files run through keel's <code>FileSecurityValidator</code> on upload.</p>
+
+            <h3 class="fw-bold mt-4">Workflow transitions</h3>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr><th>From</th><th>To</th><th>Action</th><th>Required role</th><th>Notes</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code>draft</code></td><td><code>submitted</code></td><td>Submit</td><td>submitter / admin</td><td>Stamps <code>submitted_by</code> + <code>submitted_at</code>.</td></tr>
+                                <tr><td><code>submitted</code></td><td><code>under_review</code></td><td>Begin Review</td><td>reviewer / admin</td><td>Claims the submission.</td></tr>
+                                <tr><td><code>under_review</code></td><td><code>revision_requested</code></td><td>Request Revision</td><td>reviewer / admin</td><td>Comment required. Reviewer notes captured.</td></tr>
+                                <tr><td><code>under_review</code></td><td><code>approved</code></td><td>Approve</td><td>reviewer / admin</td><td>Stamps <code>reviewed_by</code> + <code>reviewed_at</code>.</td></tr>
+                                <tr><td><code>revision_requested</code></td><td><code>draft</code></td><td>Revise</td><td>submitter / admin</td><td>Sends form back for edits.</td></tr>
+                                <tr><td><code>approved</code></td><td><code>closed</code></td><td>Close</td><td>admin</td><td>Folds into the period's close package.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <p class="small text-muted mt-3 mb-0">Every transition is recorded in <code>SubmissionStatusHistory</code> (immutable audit trail).</p>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- REVIEW QUEUE -->
+        <!-- ============================================================== -->
+        <section id="review" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-clipboard-check me-2 text-primary"></i>Review Queue</h2>
+            <p><code>/purser/review/</code> — every submission currently in <code>submitted</code> or <code>under_review</code>, sorted oldest-first.</p>
+            <p>Click any row to open the review detail at <code>/purser/review/&lt;id&gt;/</code>. The detail view shows the same line-item grid the submitter saw, plus the available transitions for the current status. Reviewers can:</p>
+            <ul>
+                <li><strong>Begin Review</strong> to claim the submission (<code>submitted → under_review</code>).</li>
+                <li><strong>Approve</strong> (<code>under_review → approved</code>).</li>
+                <li><strong>Request Revision</strong> with a required comment (<code>under_review → revision_requested</code>).</li>
+            </ul>
+            <p class="small text-muted">A submission with <code>reviewed_by</code> already filled in is "claimed" — only the original reviewer plus admins continue to see it as personal work in Helm's "Awaiting Me" inbox. Unclaimed submissions surface to every program reviewer.</p>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CLOSE PACKAGES -->
+        <!-- ============================================================== -->
+        <section id="close" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-box-seam me-2 text-primary"></i>Close Packages</h2>
+            <p><code>/purser/close/&lt;period_id&gt;/</code> — the per-period consolidated package.</p>
+            <p>A <code>ClosePackage</code> is auto-created when you visit the URL for a period that doesn't have one yet.</p>
+
+            <h3 class="fw-bold mt-4">Anatomy</h3>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Status</strong></td><td><code>draft</code> → <code>complete</code> → <code>signing</code> → <code>signed</code> → <code>published</code>.</td></tr>
+                                <tr><td><strong>Aggregated data</strong></td><td>JSON snapshot of the period's submissions, rolled up.</td></tr>
+                                <tr><td><strong>Variance vs prior</strong></td><td>JSON snapshot of period-over-period variance.</td></tr>
+                                <tr><td><strong>Variance vs budget</strong></td><td>JSON snapshot vs <code>BudgetBaseline</code>.</td></tr>
+                                <tr><td><strong>Compliance summary</strong></td><td>JSON snapshot of compliance posture for the period.</td></tr>
+                                <tr><td><strong>Executive summary</strong></td><td>Generated narrative shipped with the package.</td></tr>
+                                <tr><td><strong>PDF export</strong></td><td>The <em>pre-signing</em> PDF. Distinct from the signed PDF returned by Manifest.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="fw-bold mt-4">Signing the package</h3>
+            <p>Two paths:</p>
+            <ol>
+                <li><strong>Send to Manifest</strong> (<code>/purser/close/&lt;period_id&gt;/sign/send/</code>) — available when <code>keel.signatures</code> is configured. Hands off to Manifest with ordered signers; on approval, the signed PDF is filed back automatically as a <code>ClosePackageAttachment</code>.</li>
+                <li><strong>Local sign / upload signed PDF</strong> (<code>/purser/close/&lt;period_id&gt;/sign/local/</code>) — fallback when Manifest isn't deployed or the package was signed on paper.</li>
+            </ol>
+            <div class="alert alert-info border-0 small mt-3 mb-0">
+                <i class="bi bi-info-circle me-2"></i>
+                The Send-to-Manifest button is hidden when the integration isn't configured — there are no silent no-ops.
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- COMPLIANCE -->
+        <!-- ============================================================== -->
+        <section id="compliance" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-shield-check me-2 text-primary"></i>Compliance</h2>
+            <p><code>/purser/compliance/</code> — the internal compliance dashboard. Compliance items are generated from <code>keel.compliance</code> templates and obligations.</p>
+
+            <h3 class="fw-bold mt-4">What you'll see</h3>
+            <ul>
+                <li><strong>Overdue</strong> items, ordered by due date.</li>
+                <li><strong>Upcoming</strong> items in <code>upcoming</code> or <code>pending</code>.</li>
+                <li><strong>KPIs</strong> — active obligations, overdue count, upcoming count, items in <code>submitted</code> or <code>under_review</code>.</li>
+            </ul>
+
+            <h3 class="fw-bold mt-4">Compliance workflow</h3>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr><th>From</th><th>To</th><th>Action</th><th>Notes</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code>upcoming</code></td><td><code>pending</code></td><td>Due Soon</td><td>System-driven.</td></tr>
+                                <tr><td><code>pending</code></td><td><code>submitted</code></td><td>Submit</td><td>External submitter or staff.</td></tr>
+                                <tr><td><code>overdue</code></td><td><code>submitted</code></td><td>Submit (Late)</td><td>Same target, past due.</td></tr>
+                                <tr><td><code>submitted</code></td><td><code>under_review</code></td><td>Review</td><td>Compliance officer claims.</td></tr>
+                                <tr><td><code>under_review</code></td><td><code>accepted</code></td><td>Accept</td><td>Closes the loop.</td></tr>
+                                <tr><td><code>under_review</code></td><td><code>rejected</code></td><td>Reject</td><td>Comment required. Sends back to submitter.</td></tr>
+                                <tr><td><code>rejected</code></td><td><code>pending</code></td><td>Resubmit</td><td>External submitter retries.</td></tr>
+                                <tr><td><code>pending</code></td><td><code>overdue</code></td><td>Mark Overdue</td><td>System-driven.</td></tr>
+                                <tr><td><code>pending / overdue</code></td><td><code>waived</code></td><td>Waive</td><td>Admin only. Comment required.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- EXTERNAL PORTAL -->
+        <!-- ============================================================== -->
+        <section id="portal" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-building me-2 text-primary"></i>External Submitter Portal</h2>
+            <p><code>/purser/portal/</code> — the surface for external grant recipients.</p>
+            <p>Recipients sign in with their DockLabs identity and see only their own agency's compliance items. The portal scopes results by the user's linked Agency (a security boundary — without the filter, every external submitter would see every agency's obligations).</p>
+            <p>The portal lists items in <code>upcoming</code>, <code>pending</code>, <code>overdue</code>, <code>submitted</code>, <code>under_review</code>, <code>accepted</code>, or <code>rejected</code>, ordered by due date. Recipients submit by uploading the requested document and moving the item from <code>pending</code> (or <code>overdue</code>) to <code>submitted</code>.</p>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- HELM INTEGRATION -->
+        <!-- ============================================================== -->
+        <section id="helm" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-inbox me-2 text-primary"></i>Helm Inbox Integration</h2>
+            <p>Purser exposes <code>/api/v1/helm-feed/inbox/</code> so Helm's "Awaiting Me" column can list the submissions you specifically need to review.</p>
+            <p>The predicate, per user:</p>
+            <ul>
+                <li>Submission status is <code>submitted</code> or <code>under_review</code>, <strong>and</strong></li>
+                <li>The user is in <code>program.reviewers</code> (M2M), <strong>and</strong></li>
+                <li>Either <code>reviewed_by IS NULL</code> (unclaimed) <strong>or</strong> <code>reviewed_by = user</code> (claimed by you).</li>
+            </ul>
+            <p class="small text-muted">Items deep-link straight into the review detail page in Purser. Aggregate Purser metrics flow through the companion <code>/api/v1/helm-feed/</code> endpoint into Helm's "Across the suite" tab.</p>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- NOTIFICATIONS -->
+        <!-- ============================================================== -->
+        <section id="notifications" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-bell me-2 text-primary"></i>Notifications</h2>
+
+            <h3 class="fw-bold mt-2">Financial close</h3>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr><th>Event</th><th>When it fires</th><th>Default audience</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code>purser_submission_due</code></td><td>A program's monthly submission is due soon.</td><td>Submitters.</td></tr>
+                                <tr><td><code>purser_submission_overdue</code></td><td>A submission is past its deadline.</td><td>Submitters + reviewers. Cannot be muted.</td></tr>
+                                <tr><td><code>purser_submission_ready_for_review</code></td><td>A new submission is ready for review.</td><td>Reviewers.</td></tr>
+                                <tr><td><code>purser_revision_requested</code></td><td>A submission has been sent back for revision.</td><td>The submitter.</td></tr>
+                                <tr><td><code>purser_close_package_ready</code></td><td>All programs submitted for the period.</td><td>Admins + reviewers.</td></tr>
+                                <tr><td><code>purser_variance_alert</code></td><td>A line item exceeds budget variance threshold.</td><td>Reviewers + admins.</td></tr>
+                                <tr><td><code>purser_close_package_signed</code></td><td>The close package has been signed in Manifest.</td><td>Read-only audience.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="fw-bold mt-4">Compliance</h3>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr><th>Event</th><th>When it fires</th><th>Default audience</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code>purser_compliance_reminder</code></td><td>Upcoming compliance deadline.</td><td>External submitters.</td></tr>
+                                <tr><td><code>purser_compliance_overdue</code></td><td>A compliance item is past due.</td><td>External submitters + compliance officers. Cannot be muted.</td></tr>
+                                <tr><td><code>purser_compliance_escalation</code></td><td>An item is past its grace period.</td><td>Admins. Cannot be muted.</td></tr>
+                                <tr><td><code>purser_compliance_submitted</code></td><td>A recipient submitted a compliance document.</td><td>Compliance officers.</td></tr>
+                                <tr><td><code>purser_compliance_accepted</code></td><td>A submission was accepted.</td><td>The external submitter.</td></tr>
+                                <tr><td><code>purser_compliance_rejected</code></td><td>A submission was rejected and needs resubmission.</td><td>The external submitter.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <p class="small text-muted mt-3 mb-0">Channels (in-app + email) are user-configurable at <a href="/notifications/preferences/">/notifications/preferences/</a>. Notifications marked "cannot be muted" override individual mute preferences but still respect channel-level opt-outs.</p>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- MANIFEST SIGNING -->
+        <!-- ============================================================== -->
+        <section id="manifest" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-pen me-2 text-primary"></i>Manifest Signing Handoff</h2>
+            <p>Purser uses <code>keel.signatures</code> for the close-package signing roundtrip. The handoff follows the suite-wide DockLabs Project Lifecycle Standard:</p>
+            <div class="workflow-step"><span class="step-num">1</span><span>The package reaches <code>complete</code> status.</span></div>
+            <div class="workflow-step"><span class="step-num">2</span><span><strong>Send to Manifest</strong> packages it as a <code>SigningPacket</code> with ordered signers; the source pointer is recorded in a <code>ManifestHandoff</code> row.</span></div>
+            <div class="workflow-step"><span class="step-num">3</span><span>Manifest collects the signatures.</span></div>
+            <div class="workflow-step"><span class="step-num">4</span><span>On approval, Manifest fires the completion webhook back to Purser's <code>keel.signatures</code> endpoint.</span></div>
+            <div class="workflow-step"><span class="step-num">5</span><span>Purser files the signed PDF as a <code>ClosePackageAttachment</code> (<code>source=manifest_signed</code>, with the Manifest packet UUID), advances the close package to <code>signed</code>, and notifies subscribers.</span></div>
+            <p class="small text-muted mt-3">The local-sign fallback (manual upload of a signed PDF) writes to the same attachment table with <code>source=local_signed</code>, so the FOIA-export trail is identical regardless of which path was taken.</p>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- STATUS REFERENCE -->
+        <!-- ============================================================== -->
+        <section id="statuses" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-diagram-3 me-2 text-primary"></i>Status Reference</h2>
+
+            <h3 class="fw-bold mt-2">Submission status</h3>
+            <div class="status-flow my-2">
+                <span class="badge bg-secondary">Draft</span>
+                <i class="bi bi-arrow-right"></i>
+                <span class="badge bg-primary">Submitted</span>
+                <i class="bi bi-arrow-right"></i>
+                <span class="badge bg-info text-dark">Under Review</span>
+                <i class="bi bi-arrow-left-right"></i>
+                <span class="badge bg-warning text-dark">Revision Requested</span>
+                <span class="text-muted mx-2">→</span>
+                <span class="badge bg-success">Approved</span>
+                <i class="bi bi-arrow-right"></i>
+                <span class="badge bg-dark">Closed</span>
+            </div>
+
+            <h3 class="fw-bold mt-4">Close-package status</h3>
+            <div class="status-flow my-2">
+                <span class="badge bg-secondary">Draft</span>
+                <i class="bi bi-arrow-right"></i>
+                <span class="badge bg-primary">Complete</span>
+                <i class="bi bi-arrow-right"></i>
+                <span class="badge bg-info text-dark">Signing</span>
+                <i class="bi bi-arrow-right"></i>
+                <span class="badge bg-success">Signed</span>
+                <i class="bi bi-arrow-right"></i>
+                <span class="badge bg-dark">Published</span>
+            </div>
+
+            <h3 class="fw-bold mt-4">Compliance status</h3>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+                            <tbody>
+                                <tr><td><span class="badge bg-secondary">Upcoming</span></td><td>Due in the future, no action required yet.</td></tr>
+                                <tr><td><span class="badge bg-primary">Pending</span></td><td>Due soon — submit.</td></tr>
+                                <tr><td><span class="badge bg-danger">Overdue</span></td><td>Past the due date, not submitted.</td></tr>
+                                <tr><td><span class="badge bg-info text-dark">Submitted</span></td><td>Submitted, awaiting review.</td></tr>
+                                <tr><td><span class="badge bg-warning text-dark">Under Review</span></td><td>A compliance officer has claimed it.</td></tr>
+                                <tr><td><span class="badge bg-success">Accepted</span></td><td>Loop closed.</td></tr>
+                                <tr><td><span class="badge bg-warning text-dark">Rejected</span></td><td>Sent back. Recipient must resubmit.</td></tr>
+                                <tr><td><span class="badge bg-dark">Waived</span></td><td>Admin waived the obligation. Terminal.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="fw-bold mt-4">Program type</h3>
+            <p class="mb-0">Grant, Loan, Tax Credit, Bond Financing, Federal Pass-Through, Other.</p>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- KEYBOARD SHORTCUTS -->
+        <!-- ============================================================== -->
+        <section id="shortcuts" class="manual-section mb-5">
+            <h2 class="fw-bold mb-3"><i class="bi bi-keyboard me-2 text-primary"></i>Keyboard Shortcuts</h2>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <kbd>⌘K</kbd> <span class="text-muted">/</span> <kbd>Ctrl+K</kbd>
+                        <span>Open the suite-wide search modal.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer / next steps -->
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-body text-center p-4">
+                <h5 class="fw-bold mb-2">Need a quick answer?</h5>
+                <p class="text-muted mb-3">The FAQ covers the most common questions in 13 short cards.</p>
+                <a href="{% url 'help' %}" class="btn btn-outline-primary me-2">
+                    <i class="bi bi-question-circle me-1"></i> Help &amp; FAQ
+                </a>
+                <a href="mailto:info@docklabs.ai" class="btn btn-primary">
+                    <i class="bi bi-envelope me-1"></i> Contact Support
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+{% endblock %}

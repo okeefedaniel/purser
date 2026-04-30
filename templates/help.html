@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block page_title %}Help & FAQ{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold mb-1">Help &amp; Frequently Asked Questions</h1>
+                <p class="text-muted mb-0">Quick answers about using Purser. For the full reference, see the <a href="{% url 'manual' %}">User Manual</a>.</p>
+            </div>
+            <a href="{% url 'manual' %}" class="btn btn-outline-primary btn-sm" title="Open the full user manual">
+                <i class="bi bi-book me-1"></i> User Manual
+            </a>
+        </div>
+
+        <div class="accordion" id="faqAccordion">
+
+            <!-- Q1: What is Purser -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading1">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse1"
+                            aria-expanded="false" aria-controls="faqCollapse1">
+                        <i class="bi bi-calculator me-2 text-primary"></i>
+                        What is Purser?
+                    </button>
+                </h2>
+                <div id="faqCollapse1" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading1" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <p>Purser is the DockLabs financial-close, submission-review, and compliance product. State agencies and the programs they run use Purser to file periodic financial reports, route them through review and approval, and roll the approved results into a signable close package.</p>
+                        <p class="mb-0">Around the close cycle, Purser also tracks ongoing compliance obligations against grant recipients via an external submitter portal.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q2: Submission lifecycle -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading2">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse2"
+                            aria-expanded="false" aria-controls="faqCollapse2">
+                        <i class="bi bi-arrow-right-circle me-2 text-primary"></i>
+                        What's the submission lifecycle?
+                    </button>
+                </h2>
+                <div id="faqCollapse2" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading2" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <p>A submission moves through these statuses:</p>
+                        <ul>
+                            <li><strong>Draft</strong> — being filled in. Editable.</li>
+                            <li><strong>Submitted</strong> — filed for review. No more submitter edits.</li>
+                            <li><strong>Under Review</strong> — a reviewer has claimed it.</li>
+                            <li><strong>Revision Requested</strong> — reviewer asked for changes (comment required). Returns to Draft.</li>
+                            <li><strong>Approved</strong> — eligible to roll into the close package.</li>
+                            <li><strong>Closed</strong> — folded into the closed period. Terminal.</li>
+                        </ul>
+                        <p class="mb-0">Every transition is recorded in the immutable <code>SubmissionStatusHistory</code> audit trail.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q3: Who can edit a submission -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading3">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse3"
+                            aria-expanded="false" aria-controls="faqCollapse3">
+                        <i class="bi bi-shield-lock me-2 text-primary"></i>
+                        Why can't I edit a program's submission?
+                    </button>
+                </h2>
+                <div id="faqCollapse3" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading3" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <p>Editing requires <em>both</em> the right role and program rostering. A user with <code>purser_submitter</code> can only file submissions for the specific programs they're listed on as a submitter (M2M on the program record). Same for reviewers.</p>
+                        <p class="mb-0">Submissions are also locked once they leave <code>draft</code> or <code>revision_requested</code>. To edit a submitted record, a reviewer has to send it back via <strong>Request Revision</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q4: Review queue -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading4">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse4"
+                            aria-expanded="false" aria-controls="faqCollapse4">
+                        <i class="bi bi-clipboard-check me-2 text-primary"></i>
+                        How does the Review Queue work?
+                    </button>
+                </h2>
+                <div id="faqCollapse4" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading4" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <p>The queue (<code>/purser/review/</code>) lists every submission in <code>submitted</code> or <code>under_review</code>, oldest-first. Click any row to open the review detail.</p>
+                        <p class="mb-0">From there you can <strong>Begin Review</strong> (claims the submission), <strong>Approve</strong>, or <strong>Request Revision</strong> (comment required). Once you claim a submission by approving or requesting revision, only you and admins keep seeing it as personal work; unclaimed items are visible to every reviewer on the program.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q5: Close package -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading5">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse5"
+                            aria-expanded="false" aria-controls="faqCollapse5">
+                        <i class="bi bi-box-seam me-2 text-primary"></i>
+                        What's a close package?
+                    </button>
+                </h2>
+                <div id="faqCollapse5" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading5" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <p>A <strong>ClosePackage</strong> is the per-period consolidated artifact. One per fiscal period. It carries the period's aggregated data, period-over-period and budget variance snapshots, a compliance summary, an executive narrative, and a generated PDF.</p>
+                        <p class="mb-0">Its lifecycle: <code>draft</code> (awaiting submissions) → <code>complete</code> (all approved) → <code>signing</code> (in Manifest) → <code>signed</code> → <code>published</code>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q6: Manifest signing -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading6">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse6"
+                            aria-expanded="false" aria-controls="faqCollapse6">
+                        <i class="bi bi-pen me-2 text-primary"></i>
+                        How does signing a close package work?
+                    </button>
+                </h2>
+                <div id="faqCollapse6" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading6" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <p>Two paths:</p>
+                        <ul>
+                            <li><strong>Send to Manifest</strong> — when <code>keel.signatures</code> is configured, Purser hands the package off to Manifest with ordered signers. On approval, Manifest sends the signed PDF back; Purser files it as a <code>ClosePackageAttachment</code> and advances the package status automatically.</li>
+                            <li><strong>Local sign / upload signed PDF</strong> — the fallback when Manifest isn't deployed, or when the package was signed on paper. Upload the signed PDF directly; the package follows the same status path.</li>
+                        </ul>
+                        <p class="mb-0">The <strong>Send to Manifest</strong> button is hidden when the integration isn't configured — there are no silent no-ops.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q7: Compliance dashboard -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading7">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse7"
+                            aria-expanded="false" aria-controls="faqCollapse7">
+                        <i class="bi bi-shield-check me-2 text-primary"></i>
+                        What's on the Compliance dashboard?
+                    </button>
+                </h2>
+                <div id="faqCollapse7" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading7" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <p>The internal compliance dashboard (<code>/purser/compliance/</code>) shows compliance items generated from <code>keel.compliance</code> templates. You'll see:</p>
+                        <ul>
+                            <li><strong>Overdue</strong> items, ordered by due date.</li>
+                            <li><strong>Upcoming</strong> items in <code>upcoming</code> or <code>pending</code> status.</li>
+                            <li>KPIs: active obligations, overdue count, upcoming count, items in <code>submitted</code> or <code>under_review</code>.</li>
+                        </ul>
+                        <p class="mb-0">Click any item to open its detail view, including its template, obligation, recipient, and full action history.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q8: External submitter portal -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading8">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse8"
+                            aria-expanded="false" aria-controls="faqCollapse8">
+                        <i class="bi bi-building me-2 text-primary"></i>
+                        What is the External Submitter Portal?
+                    </button>
+                </h2>
+                <div id="faqCollapse8" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading8" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <p>The portal at <code>/purser/portal/</code> is the surface for external grant recipients filing compliance documents from outside the agency. Recipients sign in with their DockLabs identity and see only their own agency's compliance items — Purser scopes the result set by the user's linked Agency.</p>
+                        <p class="mb-0">Recipients submit by uploading the requested document and moving the item from <code>pending</code> (or <code>overdue</code>) to <code>submitted</code>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q9: Helm inbox -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading9">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse9"
+                            aria-expanded="false" aria-controls="faqCollapse9">
+                        <i class="bi bi-inbox me-2 text-primary"></i>
+                        Why does Helm show Purser submissions in my Awaiting Me column?
+                    </button>
+                </h2>
+                <div id="faqCollapse9" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading9" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <p>Purser exposes a per-user inbox endpoint at <code>/api/v1/helm-feed/inbox/</code>. Helm queries it for each user's gating reviews — submissions in <code>submitted</code> or <code>under_review</code> where you're a program reviewer and either nobody has claimed the review yet or you're the claimant.</p>
+                        <p class="mb-0">Items deep-link straight into the review detail page in Purser.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q10: Roles -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading10">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse10"
+                            aria-expanded="false" aria-controls="faqCollapse10">
+                        <i class="bi bi-people me-2 text-primary"></i>
+                        What can each Purser role do?
+                    </button>
+                </h2>
+                <div id="faqCollapse10" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading10" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Admin</dt>
+                            <dd class="col-sm-8">Full access. Manage programs, run any transition, close periods, send to Manifest, waive compliance items.</dd>
+                            <dt class="col-sm-4">Program Officer</dt>
+                            <dd class="col-sm-8">Operate programs day-to-day inside the agency. Manage rosters and review assigned programs.</dd>
+                            <dt class="col-sm-4">Submitter</dt>
+                            <dd class="col-sm-8">File monthly submissions for rostered programs. Edit line values, attach documents.</dd>
+                            <dt class="col-sm-4">Reviewer</dt>
+                            <dd class="col-sm-8">Review submissions for rostered programs. Begin review, approve, or request revisions.</dd>
+                            <dt class="col-sm-4">Compliance Officer</dt>
+                            <dd class="col-sm-8">Triage compliance items submitted by external recipients.</dd>
+                            <dt class="col-sm-4">Read-Only</dt>
+                            <dd class="col-sm-8">View dashboards and signed close packages. No edit.</dd>
+                            <dt class="col-sm-4">External Submitter</dt>
+                            <dd class="col-sm-8">Grant recipients filing compliance documents from outside the agency. Restricted to their own agency.</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q11: Notifications -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading11">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse11"
+                            aria-expanded="false" aria-controls="faqCollapse11">
+                        <i class="bi bi-bell me-2 text-primary"></i>
+                        How do I control which notifications I receive?
+                    </button>
+                </h2>
+                <div id="faqCollapse11" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading11" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <p>Open <a href="/notifications/preferences/">/notifications/preferences/</a>. For each event type, toggle the in-app and email channels independently.</p>
+                        <p class="mb-0">A few notifications (overdue submissions, overdue compliance, escalations) cannot be muted — they bypass user preferences because they're operationally critical.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q12: Variance / budget -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading12">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse12"
+                            aria-expanded="false" aria-controls="faqCollapse12">
+                        <i class="bi bi-graph-up-arrow me-2 text-primary"></i>
+                        How are budget variances calculated?
+                    </button>
+                </h2>
+                <div id="faqCollapse12" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading12" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <p>Each program can carry a <code>BudgetBaseline</code> for a fiscal year and line item, with an annual amount and an optional monthly spread. The submission form surfaces the monthly slice next to each line so submitters see the budget while typing.</p>
+                        <p class="mb-0">When a line crosses the configured variance threshold, a <code>purser_variance_alert</code> notification fires to reviewers and admins.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q13: Support -->
+            <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                <h2 class="accordion-header" id="faqHeading13">
+                    <button class="accordion-button collapsed fw-semibold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faqCollapse13"
+                            aria-expanded="false" aria-controls="faqCollapse13">
+                        <i class="bi bi-headset me-2 text-primary"></i>
+                        How do I get help?
+                    </button>
+                </h2>
+                <div id="faqCollapse13" class="accordion-collapse collapse"
+                     aria-labelledby="faqHeading13" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body lh-lg">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold"><i class="bi bi-envelope me-2"></i>Email Support</h6>
+                                        <p class="small mb-0">
+                                            <a href="mailto:info@docklabs.ai">info@docklabs.ai</a><br>
+                                            Response within 1–2 business days.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold"><i class="bi bi-chat-dots me-2"></i>Feedback Widget</h6>
+                                        <p class="small mb-0">Look in the bottom-right corner of every page. Routes to the shared support queue.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0">For questions specific to a peer product (Helm, Harbor, Admiralty, etc.), open the help link inside that product.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-body text-center p-4">
+                <i class="bi bi-question-circle display-6 text-primary d-block mb-3"></i>
+                <h5 class="fw-bold">Still have questions?</h5>
+                <p class="text-muted mb-3">If you couldn't find the answer you were looking for, please don't hesitate to contact us.</p>
+                <a href="mailto:info@docklabs.ai" class="btn btn-primary">
+                    <i class="bi bi-envelope me-2"></i> Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
