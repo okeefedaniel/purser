@@ -56,6 +56,7 @@ urlpatterns = [
     path('keel/', include('keel.accounts.urls')),
     path('keel/signatures/', include('keel.signatures.urls')),
     path('notifications/', include('keel.notifications.urls')),
+    path('settings/', include('keel.settings.urls')),
 
     # Allauth (SSO + remaining account URLs)
     path('accounts/', include('allauth.urls')),
