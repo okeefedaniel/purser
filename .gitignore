@@ -41,3 +41,7 @@ dev.sqlite3-journal
 
 # Claude Code runtime state
 .claude/*.lock
+
+# Local SQLite dev database
+dev.db
+dev.db-journal
