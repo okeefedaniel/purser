@@ -24,10 +24,17 @@ from .services import manifest_signing
 from .workflows import SUBMISSION_WORKFLOW
 
 
+# Admin-tier roles that satisfy any operational role gate. ``agency_admin``
+# is the customer-side admin (no Django /admin/ access); ``purser_admin``
+# / ``system_admin`` are the IT-tier roles. Centralized so adding another
+# admin role in future is a one-line change.
+_PURSER_ADMIN_ROLES = frozenset({'purser_admin', 'system_admin', 'agency_admin'})
+
+
 def _check_role(user, allowed_roles):
     """Check if user has one of the allowed Purser roles."""
     role = getattr(user, 'role', '') or ''
-    return role in allowed_roles or role == 'purser_admin'
+    return role in allowed_roles or role in _PURSER_ADMIN_ROLES
 
 
 def _user_can_edit_program(user, program) -> bool:
@@ -46,7 +53,7 @@ def _user_can_edit_program(user, program) -> bool:
     if not user.is_authenticated:
         return False
     role = getattr(user, 'role', '') or ''
-    if role in ('purser_admin', 'system_admin') or getattr(user, 'is_superuser', False):
+    if role in _PURSER_ADMIN_ROLES or getattr(user, 'is_superuser', False):
         return True
     if program.submitters.filter(pk=user.pk).exists():
         return True
