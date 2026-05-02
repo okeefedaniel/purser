@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'keel.reporting',
     'keel.compliance',
     'keel.signatures',
+    'keel.settings',
     # Third party
     'rest_framework',
     'crispy_forms',
