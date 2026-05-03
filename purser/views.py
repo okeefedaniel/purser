@@ -1,10 +1,7 @@
 """Purser views — financial close, submissions, compliance, portal."""
-from decimal import Decimal
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -12,13 +9,11 @@ from django.views.decorators.http import require_POST
 
 from keel.compliance.models import ComplianceItem, ComplianceObligation
 from keel.periods.models import FiscalPeriod, FiscalYear
-from keel.reporting.models import ReportLineItem
 from keel.signatures.models import ManifestHandoff
 
 from .forms import CloseLocalSignForm, ProgramForm, SubmissionLineValueForm
 from .models import (
-    BudgetBaseline, ClosePackage, Program, Submission,
-    SubmissionAttachment, SubmissionLineValue,
+    BudgetBaseline, ClosePackage, Program, Submission, SubmissionLineValue,
 )
 from .services import manifest_signing
 from .workflows import SUBMISSION_WORKFLOW

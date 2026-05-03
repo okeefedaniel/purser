@@ -1,8 +1,7 @@
 """Close package generation — aggregation, variance analysis."""
 import logging
-from decimal import Decimal
 
-from purser.models import ClosePackage, Submission, BudgetBaseline
+from purser.models import ClosePackage, Submission
 
 logger = logging.getLogger(__name__)
 

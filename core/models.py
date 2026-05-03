@@ -1,6 +1,5 @@
 """Purser-specific concrete subclasses of Keel abstract models."""
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
 from keel.core.models import AbstractAuditLog, AbstractNotification
 from keel.notifications.models import AbstractNotificationPreference, AbstractNotificationLog
