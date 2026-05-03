@@ -3,8 +3,6 @@
 Exposes fiscal close and financial metrics for Helm's executive dashboard.
 """
 from django.conf import settings
-from django.db.models import Count, Sum
-from django.utils import timezone
 
 from keel.feed.views import helm_feed_view
 
@@ -17,19 +15,16 @@ def _product_url():
 
 @helm_feed_view
 def purser_helm_feed(request):
-    from purser.models import ClosePackage, Submission, SubmissionLineValue
+    from purser.models import ClosePackage, Submission
 
-    now = timezone.now()
     base_url = _product_url()
 
     # ── Metrics ──────────────────────────────────────────────────
 
     # Current close package progress
     latest_close = ClosePackage.objects.order_by('-created_at').first()
-    close_status = ''
     close_progress = 0
     if latest_close:
-        close_status = latest_close.get_status_display()
         # Calculate progress as percentage of submissions approved for this period
         total_subs = Submission.objects.filter(fiscal_period=latest_close.fiscal_period).count()
         approved_subs = Submission.objects.filter(

@@ -308,8 +308,17 @@ RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
 # ---------------------------------------------------------------------------
 # Session
 # ---------------------------------------------------------------------------
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 days (pre-gov-launch; tighten before go-live)
+# 8-hour idle window. Combined with SESSION_SAVE_EVERY_REQUEST below, the
+# cookie's expiry slides forward on every request — an active user is
+# never logged out mid-session, but an abandoned tab on a shared/kiosk
+# machine expires within a workday. Government finance data warrants a
+# tighter window than the 30-day default a generic SaaS dashboard picks.
+SESSION_COOKIE_AGE = 60 * 60 * 8
 SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 # ---------------------------------------------------------------------------
 # Logging — surface errors to stdout for Railway
@@ -336,6 +345,10 @@ LOGGING = {
 # ---------------------------------------------------------------------------
 # Security (production)
 # ---------------------------------------------------------------------------
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'same-origin'
+X_FRAME_OPTIONS = 'DENY'
+
 if not DEBUG:
     # Railway's proxy handles HTTP→HTTPS redirect; don't do it in Django
     # (breaks Railway's internal healthcheck which sends plain HTTP)

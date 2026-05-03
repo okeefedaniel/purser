@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 """Seed Purser with fiscal years, report schemas, compliance templates, and sample programs."""
 import os
-import sys
-from datetime import date, datetime
-from decimal import Decimal
+from datetime import date
 
 import django
 

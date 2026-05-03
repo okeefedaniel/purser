@@ -7,7 +7,6 @@ NEW_LABEL = 'purser_core'
 
 
 def forwards(apps, schema_editor):
-    conn = schema_editor.connection
     # Purser already uses purser_* table names — no table renames needed.
     # Just update Django internal records.
     schema_editor.execute(

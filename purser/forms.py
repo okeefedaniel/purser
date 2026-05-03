@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Program, Submission, SubmissionLineValue, SubmissionAttachment
+from .models import Program, SubmissionAttachment, SubmissionLineValue
 
 
 class ProgramForm(forms.ModelForm):
@@ -47,6 +47,11 @@ class SubmissionAttachmentForm(forms.ModelForm):
 class CloseLocalSignForm(forms.Form):
     """Upload a locally-signed close package when Manifest isn't deployed."""
 
+    # 25 MB ceiling — close packages are PDFs, not video. Prevents
+    # arbitrary-size uploads from chewing through Railway disk before
+    # the FOIA pipeline ever sees them.
+    MAX_BYTES = 25 * 1024 * 1024
+
     signed_pdf = forms.FileField(
         label='Signed close package PDF',
         help_text='Upload the signed close package.',
@@ -57,4 +62,17 @@ class CloseLocalSignForm(forms.Form):
         f = self.cleaned_data['signed_pdf']
         if not f.name.lower().endswith('.pdf'):
             raise forms.ValidationError('Only PDF files are accepted.')
+        if f.size > self.MAX_BYTES:
+            raise forms.ValidationError(
+                f'File is too large ({f.size // (1024 * 1024)} MB). '
+                f'Limit is {self.MAX_BYTES // (1024 * 1024)} MB.'
+            )
+        # Magic-byte sniff — extension is user-controlled, content is
+        # what actually matters. Read a small head and rewind.
+        head = f.read(5)
+        f.seek(0)
+        if not head.startswith(b'%PDF-'):
+            raise forms.ValidationError(
+                'Uploaded file is not a valid PDF (missing %PDF- header).'
+            )
         return f

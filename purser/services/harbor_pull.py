@@ -5,7 +5,7 @@ import requests
 from django.conf import settings
 
 from keel.reporting.models import ReportLineItem
-from purser.models import Program, Submission, SubmissionLineValue
+from purser.models import Submission, SubmissionLineValue
 
 logger = logging.getLogger(__name__)
 
