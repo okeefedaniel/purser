@@ -261,10 +261,20 @@ def transition_submission(request, submission_id, target_status):
 # ---------------------------------------------------------------------------
 @login_required
 def review_queue(request):
-    """List submissions pending review."""
+    """List submissions pending review — scoped to programs the user can access."""
+    user = request.user
+    role = getattr(user, 'role', '') or ''
+    if role in _PURSER_ADMIN_ROLES or getattr(user, 'is_superuser', False):
+        accessible_programs = Program.objects.all()
+    else:
+        accessible_programs = Program.objects.filter(
+            reviewers=user,
+        ) | Program.objects.filter(submitters=user)
+
     submissions = Submission.objects.filter(
         status__in=['submitted', 'under_review'],
-    ).select_related('program', 'fiscal_period', 'submitted_by')
+        program__in=accessible_programs,
+    ).select_related('program', 'fiscal_period', 'submitted_by').distinct()
 
     return render(request, 'purser/review_queue.html', {
         'submissions': submissions,
@@ -273,11 +283,14 @@ def review_queue(request):
 
 @login_required
 def review_detail(request, submission_id):
-    """Review a specific submission."""
+    """Review a specific submission — enforces program membership."""
     submission = get_object_or_404(
         Submission.objects.select_related('program', 'fiscal_period'),
         pk=submission_id,
     )
+    if not _user_can_edit_program(request.user, submission.program):
+        raise PermissionDenied('You are not a member of this program.')
+
     line_items = submission.program.report_schema.line_items.order_by('sort_order')
     values = {v.line_item_id: v for v in submission.line_values.all()}
 
